@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Athul Varghese Joby | Cyber Security Portfolio</title>
+  <meta name="description" content="Cyber Security Portfolio of Athul Varghese Joby. Infrastructure security auditor, pen-tester, and network security specialist.">
+  <link rel="stylesheet" href="style.css">
+  <!-- Google Fonts: Outfit for modern professional headings, Inter for body layout -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons for clean dashboard elements -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- Background Glowing Orbs (SaaS Dribbble lighting) -->
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="bg-orb orb-3"></div>
+
+  <!-- Background Video Overlay -->
+  <video autoplay loop muted playsinline id="bg-video">
+    <source src="background.mp4" type="video/mp4">
+  </video>
+
+  <!-- Canvas background for mouse-following mesh lines -->
+  <canvas id="matrix-canvas"></canvas>
+
+  <!-- SOUND SYSTEM TOGGLE -->
+  <button id="sound-toggle" aria-label="Toggle Audio System" title="Toggle audio feedback">
+    <i class="fa-solid fa-volume-xmark"></i>
+    <span class="sound-label">AUDIO OFF</span>
+  </button>
+
+  <!-- FIXED FLOATING CAPSULE NAVIGATION HEADER -->
+  <div class="nav-container">
+    <header class="system-header">
+      <div class="header-logo font-mono">
+        <span class="glitch-text" data-text="ATHUL">ATHUL</span>
+        <span class="header-version">SEC_NODE</span>
+      </div>
+      
+      <nav class="system-nav hidden-tablet">
+        <a href="#home" class="nav-link active">HOME</a>
+        <a href="#about" class="nav-link">OVERVIEW</a>
+        <a href="#skills" class="nav-link">SKILLS</a>
+        <a href="#projects" class="nav-link">PROJECTS</a>
+        <a href="#experience" class="nav-link">EXPERIENCE</a>
+        <a href="#certs" class="nav-link">CERTS</a>
+        <a href="#contact" class="nav-link">CONTACT</a>
+      </nav>
+
+      <div class="system-ping font-mono text-xs">
+        <span class="status-indicator online"></span>
+        <span id="ping-value">14ms</span>
+      </div>
+    </header>
+  </div>
+
+  <!-- MOBILE NAVIGATION TABS -->
+  <nav class="mobile-nav hidden-desktop">
+    <a href="#home" class="mobile-nav-link active"><i class="fa-solid fa-house"></i><span>HOME</span></a>
+    <a href="#about" class="mobile-nav-link"><i class="fa-solid fa-user"></i><span>BIO</span></a>
+    <a href="#skills" class="mobile-nav-link"><i class="fa-solid fa-shield-halved"></i><span>SKILLS</span></a>
+    <a href="#projects" class="mobile-nav-link"><i class="fa-solid fa-code"></i><span>CODE</span></a>
+    <a href="#experience" class="mobile-nav-link"><i class="fa-solid fa-file-contract"></i><span>LOGS</span></a>
+    <a href="#certs" class="mobile-nav-link"><i class="fa-solid fa-key"></i><span>KEYS</span></a>
+    <a href="#contact" class="mobile-nav-link"><i class="fa-solid fa-envelope"></i><span>LINK</span></a>
+  </nav>
+
+  <!-- MAIN SCROLLABLE CONTAINER FOR STICKY SLIDES -->
+  <main class="scroll-container">
+    
+    <!-- SECTION 1: HERO (PROFILE SPLIT) -->
+    <section id="home" class="section hero-section">
+      <div class="section-container hero-grid">
+        
+        <!-- Left details: Professional introduction -->
+        <div class="hero-left">
+          <div class="badge-status font-mono">
+            <span class="pulse-indicator"></span>
+            <span>SECURE GATEWAY SYNCED // INFRASTRUCTURE AUDITOR</span>
+          </div>
+          
+          <h1 class="hero-title font-sans">
+            Securing Digital Assets, <span class="gradient-text">Auditing Systems</span>.
+          </h1>
+          
+          <p class="hero-subtitle font-sans">
+            Hey, I'm <span class="text-white font-bold">Athul Varghese Joby</span>. A Cybersecurity student specializing in vulnerability assessment, OWASP auditing, and network security analysis.
+          </p>
+          
+          <div class="hero-bullets font-sans text-sm">
+            <div class="bullet-item"><i class="fa-solid fa-shield-halved text-accent"></i> Web Application Penetration Testing & Analysis</div>
+            <div class="bullet-item"><i class="fa-solid fa-code text-accent"></i> Practical Cyber Security Labs Completed on PortSwigger & TryHackMe</div>
+            <div class="bullet-item"><i class="fa-solid fa-network-wired text-accent"></i> Cisco Networking (CCNA) & Linux RH104 Fundamentals</div>
+          </div>
+        </div>
+        
+        <!-- Right details: Clean Professional Profile Card (Mockup-inspired) -->
+        <div class="hero-right">
+          <div class="profile-card-horizontal cyber-card">
+            <!-- Left Half: Large Profile Photo -->
+            <div class="profile-image-panel">
+              <img src="avatar.jpg" alt="Athul Varghese Joby" class="cyber-avatar-img">
+              <div class="cyber-avatar-fallback hidden">
+                <i class="fa-solid fa-user-secret"></i>
+              </div>
+            </div>
+            
+            <!-- Right Half: Clean Details List -->
+            <div class="profile-info-panel font-mono text-xs">
+              <div class="info-title font-sans">Athul Varghese Joby</div>
+              <div class="info-subtitle text-accent">Cybersecurity Specialist</div>
+              <div class="info-divider"></div>
+              
+              <div class="info-line">
+                <span class="lbl">FOCUS:</span> 
+                <span class="val text-white">Security Audits</span>
+              </div>
+              <div class="info-line">
+                <span class="lbl">IP_NODE:</span> 
+                <span class="val">192.168.4.15</span>
+              </div>
+              <div class="info-line">
+                <span class="lbl">LOCATION:</span> 
+                <span class="val">Kannur, Kerala</span>
+              </div>
+              <div class="info-line">
+                <span class="lbl">EMAIL:</span> 
+                <span class="val text-success">
+                  <a href="mailto:athulv722@gmail.com" class="info-email-link">athulv722@gmail.com</a>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      
+      <div class="scroll-prompt font-mono">
+        <a href="#about" class="scroll-indicator-link">
+          <span>SCROLL_TO_DECRYPT_OVERVIEW</span>
+          <i class="fa-solid fa-chevron-down pulsing-arrow"></i>
+        </a>
+      </div>
+    </section>
+
+    <!-- SECTION 2: SYSTEM OVERVIEW (ABOUT) -->
+    <section id="about" class="section reveal-on-scroll">
+      <div class="section-container">
+        <div class="panel-header">
+          <span class="panel-number">01</span>
+          <h2 class="decrypt-header">SYSTEM OVERVIEW</h2>
+          <div class="header-decor"></div>
+        </div>
+
+        <div class="about-grid">
+          <!-- Summary card -->
+          <div class="cyber-card col-span-2">
+            <div class="card-tag">profile_summary.log</div>
+            <h3 class="font-mono text-accent">Summary Statement</h3>
+            <p class="summary-paragraph font-sans leading-relaxed">
+              Cyber Security student pursuing a Bachelor of Computer Applications (BCA) in Cyber Security at <span class="text-accent">Kristu Jayanti College, Bengaluru</span>. Hands-on experience in web application security testing, vulnerability assessment, Linux administration, and network security. Skilled in identifying security vulnerabilities through practical labs on PortSwigger Web Security Academy and TryHackMe. Familiar with Kali Linux, Burp Suite, Nmap, and web security concepts including SQL Injection, XSS, Path Traversal, SSRF, and Authentication vulnerabilities.
+            </p>
+            
+            <div class="diagnostic-grid font-mono">
+              <div class="diag-item">
+                <span class="diag-label">ACADEMIC PATH:</span>
+                <span class="diag-val text-white">BCA Cyber Security (5th Semester)</span>
+              </div>
+              <div class="diag-item">
+                <span class="diag-label">ACADEMIC STAGE:</span>
+                <span class="diag-val text-accent">Expected Graduation 2027</span>
+              </div>
+              <div class="diag-item">
+                <span class="diag-label">OPERATIONAL OS:</span>
+                <span class="diag-val">Linux / Windows Environments</span>
+              </div>
+              <div class="diag-item">
+                <span class="diag-label">GRID COORDINATES:</span>
+                <span class="diag-val text-success">Kannur, Kerala, India</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interests block -->
+          <div class="cyber-card interest-card">
+            <div class="card-tag">core_research_areas</div>
+            <h3 class="font-mono text-accent">Research Segments</h3>
+            <ul class="interest-list font-mono">
+              <li><i class="fa-solid fa-angle-right text-accent"></i> Ethical Hacking</li>
+              <li><i class="fa-solid fa-angle-right text-accent"></i> Penetration Testing</li>
+              <li><i class="fa-solid fa-angle-right text-accent"></i> Web Application Security</li>
+              <li><i class="fa-solid fa-angle-right text-accent"></i> Vulnerability Assessment</li>
+              <li><i class="fa-solid fa-angle-right text-accent"></i> Cyber Threat Analysis</li>
+              <li><i class="fa-solid fa-angle-right text-accent"></i> Security Research</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: SKILLS & DYNAMIC SECURITY NODE NETWORK -->
+    <section id="skills" class="section reveal-on-scroll">
+      <div class="section-container">
+        <div class="panel-header">
+          <span class="panel-number">02</span>
+          <h2 class="decrypt-header">VULNERABILITY RATINGS (SKILLS)</h2>
+          <div class="header-decor"></div>
+        </div>
+
+        <div class="skills-section-grid">
+          <!-- Skill progression cards -->
+          <div class="skills-bars-container">
+            <div class="cyber-card">
+              <div class="card-tag">skills_auditing</div>
+              <h3 class="font-mono">Security Assessments</h3>
+              <div class="skills-wrapper font-mono">
+                <div class="skill-item">
+                  <div class="skill-info">
+                    <span>Web Application Pen-testing</span>
+                    <span>85%</span>
+                  </div>
+                  <div class="skill-bar"><div class="skill-fill" data-width="85%"></div></div>
+                </div>
+                <div class="skill-item">
+                  <div class="skill-info">
+                    <span>Vulnerability Assessments</span>
+                    <span>80%</span>
+                  </div>
+                  <div class="skill-bar"><div class="skill-fill" data-width="80%"></div></div>
+                </div>
+                <div class="skill-item">
+                  <div class="skill-info">
+                    <span>OWASP Top 10 Frameworks</span>
+                    <span>90%</span>
+                  </div>
+                  <div class="skill-bar"><div class="skill-fill" data-width="90%"></div></div>
+                </div>
+                <div class="skill-item">
+                  <div class="skill-info">
+                    <span>Network Security Fundamentals</span>
+                    <span>75%</span>
+                  </div>
+                  <div class="skill-bar"><div class="skill-fill" data-width="75%"></div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="cyber-card margin-top-lg">
+              <div class="card-tag">programming_tools</div>
+              <h3 class="font-mono">Arsenal (Tools & Coding)</h3>
+              <div class="skills-wrapper font-mono">
+                <div class="skill-item">
+                  <div class="skill-info">
+                    <span>Kali Linux, Burp Suite, Nmap, Wireshark, GitHub</span>
+                    <span>85%</span>
+                  </div>
+                  <div class="skill-bar"><div class="skill-fill" data-width="85%"></div></div>
+                </div>
+                <div class="skill-item">
+                  <div class="skill-info">
+                    <span>Python Scripting</span>
+                    <span>80%</span>
+                  </div>
+                  <div class="skill-bar"><div class="skill-fill" data-width="80%"></div></div>
+                </div>
+                <div class="skill-item">
+                  <div class="skill-info">
+                    <span>Java Programming</span>
+                    <span>75%</span>
+                  </div>
+                  <div class="skill-bar"><div class="skill-fill" data-width="75%"></div></div>
+                </div>
+                <div class="skill-item">
+                  <div class="skill-info">
+                    <span>SQL Databases (MySQL, MongoDB)</span>
+                    <span>70%</span>
+                  </div>
+                  <div class="skill-bar"><div class="skill-fill" data-width="70%"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Security Node canvas widget -->
+          <div class="security-nodes-container cyber-card">
+            <div class="card-tag">security_node_grid</div>
+            <h3 class="font-mono text-accent"><i class="fa-solid fa-circle-nodes blink-fast"></i> Interactive Node Mesh</h3>
+            <p class="text-xs text-muted font-sans margin-bottom-sm">
+              Hover your cursor inside the sector below to attract security nodes and visualize real-time link connections.
+            </p>
+            <div class="nodes-canvas-wrapper">
+              <canvas id="nodes-canvas"></canvas>
+            </div>
+            <div class="radar-diagnostics font-mono text-xs">
+              <div class="radar-line">Link Status: <span class="text-success font-bold">SYNCHRONIZED</span></div>
+              <div class="radar-line">Active Paths: <span id="nodes-active-paths" class="text-accent">0 connections</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: EXPLOIT DATABASE (PROJECTS) -->
+    <section id="projects" class="section reveal-on-scroll">
+      <div class="section-container">
+        <div class="panel-header">
+          <span class="panel-number">03</span>
+          <h2 class="decrypt-header">EXPLOIT DATABASE (PROJECTS)</h2>
+          <div class="header-decor"></div>
+        </div>
+
+        <div class="projects-grid">
+          <!-- Project 1 -->
+          <div class="project-card">
+            <div class="project-banner font-mono">
+              <span>EXPL_REF: 001 // DATA_EXTRACTION</span>
+              <span class="project-tag-status success">ONLINE</span>
+            </div>
+            <div class="project-body">
+              <h3 class="font-mono text-accent">OCR Food Label Scanner</h3>
+              <p class="font-sans text-muted">
+                Developed a Python-based application to extract nutritional information from food labels. Implemented OCR utilizing EasyOCR and Tesseract OCR, applying custom image preprocessing to optimize text recognition.
+              </p>
+              <div class="project-footer font-mono">
+                <span>TECH: Python, EasyOCR, Tesseract</span>
+                <span>SCOPE: Individual Project</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project 2 -->
+          <div class="project-card">
+            <div class="project-banner font-mono">
+              <span>EXPL_REF: 002 // PORT_SWIGGER</span>
+              <span class="project-tag-status solve">LABS COMPLETED</span>
+            </div>
+            <div class="project-body">
+              <h3 class="font-mono text-accent">Web Security Assessment Labs</h3>
+              <p class="font-sans text-muted">
+                Completed web security assessment labs covering SQL Injection, XSS, Path Traversal, Authentication Vulnerabilities, SSRF, Information Disclosure, Business Logic, and File Upload Vulnerabilities on PortSwigger Academy.
+              </p>
+              <div class="project-footer font-mono">
+                <span>PLATFORM: PortSwigger Academy</span>
+                <span>SKILL: OWASP Top 10</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project 3 -->
+          <div class="project-card">
+            <div class="project-banner font-mono">
+              <span>EXPL_REF: 003 // THM_ROOMS</span>
+              <span class="project-tag-status root">ROOT ACCESS</span>
+            </div>
+            <div class="project-body">
+              <h3 class="font-mono text-accent">TryHackMe Practical Labs</h3>
+              <p class="font-sans text-muted">
+                Completed active cyber challenges covering Mr Robot CTF, Pickle Rick, Burp Suite Repeater, Introduction to Cyber Security, and Bypass Really Simple Security configurations.
+              </p>
+              <div class="project-footer font-mono">
+                <span>PLATFORM: TryHackMe Labs</span>
+                <span>SKILL: Linux, Recon, Intercept</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project 4 -->
+          <div class="project-card">
+            <div class="project-banner font-mono">
+              <span>EXPL_REF: 004 // NETWORK_SETUP</span>
+              <span class="project-tag-status success">OPERATIONAL</span>
+            </div>
+            <div class="project-body">
+              <h3 class="font-mono text-accent">Network Setup & CCTV Routing</h3>
+              <p class="font-sans text-muted">
+                Managed physical configuration, deployment, and local network routing layouts for CCTV security camera systems. Debugged active connection feeds and subnet routing components.
+              </p>
+              <div class="project-footer font-mono">
+                <span>TECH: Routing, Subnetting, Hardware</span>
+                <span>SCOPE: Field Deployment</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TWO INTERACTIVE LAB SHOWCASES -->
+        <div class="interactive-lab-headline font-mono margin-top-lg">
+          <h4><i class="fa-solid fa-flask"></i> SYSTEM INTERACTIVE LAB MODULES:</h4>
+        </div>
+        
+        <div class="lab-modules-grid">
+          <!-- Widget 1: Password Strength Auditor live widget -->
+          <div class="cyber-card widget-card">
+            <div class="card-tag">lab_module_01 // password_auditor</div>
+            <h3 class="font-mono text-accent">Real-Time Password Complexity Auditor</h3>
+            <p class="text-xs text-muted font-sans margin-bottom-sm">
+              Input a trial passkey to run real-time entropy audits and estimate dictionary cracking times.
+            </p>
+            <div class="live-auditor-form font-mono">
+              <div class="form-group margin-none">
+                <input type="text" id="audit-input" placeholder="Type password here to audit..." autocomplete="off" spellcheck="false">
+              </div>
+              <div class="audit-results-grid">
+                <div class="audit-result-item">
+                  <span class="lbl">ENTROPY:</span>
+                  <span id="audit-entropy" class="val text-error">0 bits</span>
+                </div>
+                <div class="audit-result-item">
+                  <span class="lbl">STRENGTH:</span>
+                  <span id="audit-strength" class="val text-error">WEAK</span>
+                </div>
+                <div class="audit-result-item col-span-full">
+                  <span class="lbl">CRACKING_TIME:</span>
+                  <span id="audit-cracktime" class="val text-error">Instantly (&lt;0.01 seconds)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Widget 2: Simulated OCR scanning mock tool -->
+          <div class="cyber-card widget-card">
+            <div class="card-tag">lab_module_02 // label_ocr_scan</div>
+            <h3 class="font-mono text-accent">Simulated Laser OCR Label Scanner</h3>
+            <p class="text-xs text-muted font-sans margin-bottom-sm">
+              Triggers a mock image scanner laser and visualizes JSON text extraction.
+            </p>
+            
+            <div class="ocr-simulator font-mono">
+              <div class="ocr-image-area">
+                <div class="laser-scanner-line"></div>
+                <!-- Mock nutrition packaging outline vector -->
+                <div class="mock-product-label">
+                  <div class="label-title">NUTRITION FACTS</div>
+                  <div class="divider-thick"></div>
+                  <div class="label-field">CALORIES: 240</div>
+                  <div class="label-field">TOTAL FAT: 8g</div>
+                  <div class="label-field">SODIUM: 160mg</div>
+                  <div class="label-field">SUGARS: 12g</div>
+                </div>
+              </div>
+              
+              <div class="ocr-controls">
+                <button type="button" id="trigger-ocr-btn" class="cyber-btn w-full">
+                  <span class="btn-text">INITIALIZE LASER SCAN</span>
+                  <span class="btn-accent">></span>
+                </button>
+                <div class="ocr-json-output text-xs font-mono" id="ocr-output-log">
+                  System: Scanner idle.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 5: EXPERIENCE LOGS (TIMELINE) -->
+    <section id="experience" class="section reveal-on-scroll">
+      <div class="section-container">
+        <div class="panel-header">
+          <span class="panel-number">04</span>
+          <h2 class="decrypt-header">INFILTRATION LOGS (EXPERIENCE)</h2>
+          <div class="header-decor"></div>
+        </div>
+
+        <div class="timeline font-mono">
+          <div class="timeline-bar"></div>
+
+          <!-- Timeline item 1 -->
+          <div class="timeline-item reveal-on-scroll">
+            <div class="timeline-node"></div>
+            <div class="timeline-content cyber-card">
+              <div class="card-tag">internship_log</div>
+              <div class="timeline-header">
+                <span class="timeline-date">2026 / 1-Month Offline</span>
+                <h3 class="timeline-title text-accent">Cyber Security Intern – TechCake</h3>
+              </div>
+              <ul class="timeline-details font-sans">
+                <li>Completed practical cybersecurity training focused on Linux, networking, and web application security.</li>
+                <li>Performed vulnerability assessment exercises in controlled lab environments.</li>
+                <li>Worked with Kali Linux, Burp Suite, and Nmap.</li>
+                <li>Conducted reconnaissance, enumeration, and basic security testing activities.</li>
+                <li>Gained hands-on exposure to cybersecurity workflows and reporting.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Timeline item 2 -->
+          <div class="timeline-item reveal-on-scroll">
+            <div class="timeline-node"></div>
+            <div class="timeline-content cyber-card">
+              <div class="card-tag">technician_log</div>
+              <div class="timeline-header">
+                <span class="timeline-date">HISTORICAL NODE</span>
+                <h3 class="timeline-title text-accent">CCTV Technician</h3>
+              </div>
+              <ul class="timeline-details font-sans">
+                <li>Managed configuration, physical deployment, and testing of security surveillance cameras.</li>
+                <li>Conducted local network routing configuration, wiring layouts, and real-time feed debugging.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 6: CERTIFICATIONS -->
+    <section id="certs" class="section reveal-on-scroll">
+      <div class="section-container">
+        <div class="panel-header">
+          <span class="panel-number">05</span>
+          <h2 class="decrypt-header">DECRYPTION KEYS (CERTIFICATIONS)</h2>
+          <div class="header-decor"></div>
+        </div>
+
+        <div class="certifications-grid font-mono">
+          <!-- Cert 1 -->
+          <div class="cert-card cyber-card">
+            <div class="cert-hash">MD5: a9083de...1e22</div>
+            <div class="cert-body">
+              <i class="fa-solid fa-graduation-cap cert-icon"></i>
+              <h3>NPTEL Elite Certification</h3>
+              <p class="cert-desc">Programming in Java (Score: 80%)</p>
+            </div>
+          </div>
+
+          <!-- Cert 2 -->
+          <div class="cert-card cyber-card">
+            <div class="cert-hash">MD5: b4490d2...a90f</div>
+            <div class="cert-body">
+              <i class="fa-solid fa-network-wired cert-icon"></i>
+              <h3>Cisco Networking Academy</h3>
+              <p class="cert-desc">CCNA: Introduction to Networks</p>
+            </div>
+          </div>
+
+          <!-- Cert 3 -->
+          <div class="cert-card cyber-card">
+            <div class="cert-hash">MD5: d1882ce...b441</div>
+            <div class="cert-body">
+              <i class="fa-solid fa-shield-halved cert-icon"></i>
+              <h3>Cisco Networking Academy</h3>
+              <p class="cert-desc">Introduction to Cybersecurity</p>
+            </div>
+          </div>
+
+          <!-- Cert 4 -->
+          <div class="cert-card cyber-card">
+            <div class="cert-hash">MD5: c488af1...f01e</div>
+            <div class="cert-body">
+              <i class="fa-brands fa-redhat cert-icon"></i>
+              <h3>Red Hat Academy</h3>
+              <p class="cert-desc">Linux Fundamentals (RH104)</p>
+            </div>
+          </div>
+
+          <!-- Cert 5 -->
+          <div class="cert-card cyber-card">
+            <div class="cert-hash">MD5: e18cf41...a90c</div>
+            <div class="cert-body">
+              <i class="fa-solid fa-bolt cert-icon"></i>
+              <h3>NASSCOM FutureSkills Prime</h3>
+              <p class="cert-desc">Digital Engineering (Gold Standard)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 7: CONTACT / SECURE RELAY -->
+    <section id="contact" class="section reveal-on-scroll">
+      <div class="section-container">
+        <div class="panel-header">
+          <span class="panel-number">06</span>
+          <h2 class="decrypt-header">ESTABLISH SECURE LINK</h2>
+          <div class="header-decor"></div>
+        </div>
+
+        <div class="contact-layout">
+          <!-- Details channel blocks -->
+          <div class="contact-channels font-mono">
+            <div class="channel-card cyber-card">
+              <div class="channel-icon text-accent"><i class="fa-solid fa-envelope"></i></div>
+              <div class="channel-content">
+                <span class="channel-label">SECURE_MAIL_RELAY</span>
+                <a href="mailto:athulv722@gmail.com" class="channel-value">athulv722@gmail.com</a>
+              </div>
+            </div>
+
+            <div class="channel-card cyber-card">
+              <div class="channel-icon text-accent"><i class="fa-solid fa-phone"></i></div>
+              <div class="channel-content">
+                <span class="channel-label">ENCRYPTED_VOICE_LINE</span>
+                <span class="channel-value">+91 8547141145</span>
+              </div>
+            </div>
+
+            <div class="channel-card cyber-card">
+              <div class="channel-icon text-accent"><i class="fa-brands fa-linkedin-in"></i></div>
+              <div class="channel-content">
+                <span class="channel-label">LINKED_PORT_GATE</span>
+                <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" class="channel-value">linkedin.com/in/athul-varghese-joby</a>
+              </div>
+            </div>
+
+            <div class="channel-card cyber-card">
+              <div class="channel-icon text-accent"><i class="fa-solid fa-location-dot"></i></div>
+              <div class="channel-content">
+                <span class="channel-label">PHYSICAL_GRID_COORD</span>
+                <span class="channel-value">Kannur, Kerala, India</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact Form panel -->
+          <div class="cyber-card contact-form-panel">
+            <div class="card-tag">relay_portal</div>
+            <h3 class="font-mono text-accent">Transmit Encrypted Packet</h3>
+            <form id="secure-contact-form" class="font-mono">
+              <div class="form-group">
+                <label for="form-sender">SENDER_ID (Name)</label>
+                <input type="text" id="form-sender" placeholder="anonymous_agent..." required>
+              </div>
+              <div class="form-group">
+                <label for="form-email">RESPONSE_IP (Email)</label>
+                <input type="email" id="form-email" placeholder="agent@node.net..." required>
+              </div>
+              <div class="form-group">
+                <label for="form-msg">PAYLOAD DATA (Message)</label>
+                <textarea id="form-msg" rows="5" placeholder="Input transmission data payload here..." required></textarea>
+              </div>
+              <button type="submit" class="cyber-btn w-full">
+                <span class="btn-text">TRANSMIT COMPROMISED DATA</span>
+                <span class="btn-accent">></span>
+              </button>
+              <div id="form-status" class="form-status-msg margin-top-sm"></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER STATUS -->
+    <footer class="system-footer">
+      <div class="footer-left font-mono">
+        <span class="status-indicator online"></span>
+        <span>NODE://FSOCIETY_GATEWAY_UP</span>
+      </div>
+      <div class="footer-center font-mono hidden-mobile">
+        <span>Control is an Illusion.</span>
+      </div>
+      <div class="footer-right font-mono">
+        <span>SYSTEM_TIME: <span id="sys-clock">11:32:00</span></span>
+      </div>
+    </footer>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
