@@ -1,651 +1,503 @@
 /* ==========================================
-   PROFESSIONAL CYBERSECURITY PORTFOLIO LOGIC
+   PREMIUM PORTFOLIO INTERACTION CONTROLLER
    ========================================== */
 
-// --- AUDIO SYNTHESIS SYSTEM ---
-let audioCtx = null;
-let soundEnabled = false;
+// Ensure script runs after DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
 
-const soundToggle = document.getElementById('sound-toggle');
-if (soundToggle) {
-  soundToggle.addEventListener('click', () => {
-    soundEnabled = !soundEnabled;
-    if (soundEnabled) {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-      soundToggle.classList.add('active');
-      soundToggle.innerHTML = '<i class="fa-solid fa-volume-high"></i> <span class="sound-label">AUDIO ON</span>';
-      playSuccess();
-    } else {
-      soundToggle.classList.remove('active');
-      soundToggle.innerHTML = '<i class="fa-solid fa-volume-xmark"></i> <span class="sound-label">AUDIO OFF</span>';
-    }
-  });
-}
+  // --- BACKGROUND CANVAS (DISSOLVING Abstract tech wave grid) ---
+  const bgCanvas = document.getElementById('background-canvas');
+  if (bgCanvas) {
+    const bgCtx = bgCanvas.getContext('2d');
+    let width = 0;
+    let height = 0;
+    let gridPoints = [];
+    const gridSpacing = 45;
+    let mouse = { x: null, y: null, radius: 120 };
 
-function playTick() {
-  if (!soundEnabled || !audioCtx || audioCtx.state === 'suspended') return;
-  try {
-    let osc = audioCtx.createOscillator();
-    let gain = audioCtx.createGain();
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    
-    osc.frequency.setValueAtTime(800 + Math.random() * 400, audioCtx.currentTime);
-    osc.type = 'sine';
-    gain.gain.setValueAtTime(0.003, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.015);
-    
-    osc.start();
-    osc.stop(audioCtx.currentTime + 0.015);
-  } catch (e) {}
-}
-
-function playSuccess() {
-  if (!soundEnabled || !audioCtx || audioCtx.state === 'suspended') return;
-  try {
-    let osc = audioCtx.createOscillator();
-    let gain = audioCtx.createGain();
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    
-    const now = audioCtx.currentTime;
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(523.25, now); // C5
-    osc.frequency.setValueAtTime(659.25, now + 0.05); // E5
-    osc.frequency.setValueAtTime(783.99, now + 0.1); // G5
-    osc.frequency.setValueAtTime(1046.50, now + 0.15); // C6
-    
-    gain.gain.setValueAtTime(0.02, now);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
-    
-    osc.start();
-    osc.stop(now + 0.35);
-  } catch (e) {}
-}
-
-function playBeep(freq, duration) {
-  if (!soundEnabled || !audioCtx || audioCtx.state === 'suspended') return;
-  try {
-    let osc = audioCtx.createOscillator();
-    let gain = audioCtx.createGain();
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    
-    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-    osc.type = 'sine';
-    gain.gain.setValueAtTime(0.01, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
-    
-    osc.start();
-    osc.stop(audioCtx.currentTime + duration);
-  } catch (e) {}
-}
-
-// Fallback avatar handling
-const avatarImg = document.querySelector('.cyber-avatar-img');
-const avatarFallback = document.querySelector('.cyber-avatar-fallback');
-if (avatarImg) {
-  avatarImg.addEventListener('error', () => {
-    avatarImg.style.display = 'none';
-    if (avatarFallback) avatarFallback.classList.remove('hidden');
-  });
-}
-
-// --- BACKGROUND CANVAS (PROFESSIONAL SCROLLING HACKER TERMINAL LOGS) ---
-const canvas = document.getElementById('matrix-canvas');
-const ctx = canvas.getContext('2d');
-
-let terminalLines = [];
-const fontSize = 12;
-let columnsCount = 0;
-let lineSpacing = 16;
-let maxLines = 0;
-
-const logTemplates = [
-  "root@sec_node:~# nmap -sS -sV -O 192.168.4.15",
-  "PORT     STATE SERVICE VERSION",
-  "22/tcp   open  ssh     OpenSSH 8.2p1 Ubuntu 4ubuntu0.5",
-  "80/tcp   open  http    Apache httpd 2.4.41 ((Ubuntu))",
-  "443/tcp  open  ssl/http Apache httpd 2.4.41",
-  "MAC Address: 00:50:56:C0:00:08 (VMware)",
-  "Device type: general purpose | Running: Linux 5.X",
-  "root@sec_node:~# easyocr --model label_v3.bin --image nutrition.jpg",
-  "EasyOCR: Loading Tesseract eng OCR engines... SUCCESS",
-  "[INFO] Preprocessing Filter Applied: Grayscale=1, Contrast=1.2",
-  "[EXTRACTED] CALORIES: 240 kcal | SODIUM: 160mg | FAT: 8g",
-  "root@sec_node:~# sqlmap -u 'http://target.node/sqli/' --dbs",
-  "[+] sqlmap/1.4.12#stable - automatic SQL injection tool",
-  "[*] retrieving database names",
-  "[*] db: portswigger_academy_sqli",
-  "root@sec_node:~# burpsuite --project techcake_assessment",
-  "[BurpSuite] Intercept enabled on localhost:8080",
-  "[REPEATER] Sending payload: GET /admin HTTP/1.1",
-  "[REPEATER] Response: 200 OK - Admin Panel Accessed successfully",
-  "root@sec_node:~# thm --join-room mr_robot_ctf --decrypt-key",
-  "[THM] Room 'Mr Robot CTF' synchronized. Initiating search...",
-  "[THM] key1.txt retrieved: f3e970a04910cfab9812a88e990ad312",
-  "root@sec_node:~# thm --join-room pickle_rick --exploit",
-  "[THM] Pickle Rick: executing command execution payload...",
-  "[THM] Webserver root accessible. flag: 'WUBBA LUBBA DUB DUB'",
-  "root@sec_node:~# python3 password_strength_analyzer.py",
-  "Entropy calculation active... trial passkey parsed.",
-  "[AUDIT] Character classes: upper, lower, numbers, symbols",
-  "[AUDIT] Calculated Entropy: 84 bits. Classification: SECURE",
-  "root@sec_node:~# route print -4",
-  "IPv4 Route Table - Active Routes:",
-  "Network Destination      Netmask          Gateway       Interface",
-  "          0.0.0.0          0.0.0.0      192.168.1.1    192.168.1.100",
-  "      192.168.1.0    255.255.255.0         On-link    192.168.1.100",
-  "[SEC_NODE] ESTABLISHING ROUTING TUNNEL... [AES-256-GCM]",
-  "[SEC_NODE] PEER CONNECTION ESTABLISHED AT NODE Kannur, Kerala",
-  "[OK] AUDIT SYSTEM INTEGRITY RATING: 100%"
-];
-
-function initCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  maxLines = Math.floor(canvas.height / lineSpacing) + 5;
-  columnsCount = Math.ceil(canvas.width / 400);
-  
-  terminalLines = [];
-  for (let c = 0; c < columnsCount; c++) {
-    terminalLines[c] = [];
-    let startY = canvas.height - Math.random() * canvas.height;
-    for (let i = 0; i < maxLines; i++) {
-      terminalLines[c].push({
-        text: logTemplates[Math.floor(Math.random() * logTemplates.length)],
-        y: startY - (i * lineSpacing)
-      });
-    }
-  }
-}
-
-function animateCanvas() {
-  ctx.fillStyle = '#050608';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  
-  // Faint green scanlines overlay
-  ctx.strokeStyle = 'rgba(16, 185, 129, 0.012)';
-  ctx.lineWidth = 1;
-  for (let y = 0; y < canvas.height; y += 4) {
-    ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.lineTo(canvas.width, y);
-    ctx.stroke();
-  }
-  
-  ctx.font = `${fontSize}px "Share Tech Mono", monospace`;
-  
-  for (let c = 0; c < columnsCount; c++) {
-    const colX = 20 + c * 400;
-    
-    // Draw lines
-    terminalLines[c].forEach(line => {
-      const progress = line.y / canvas.height;
-      let opacity = 0.045; // Subtle hacker logs background
+    function resizeBgCanvas() {
+      width = bgCanvas.width = window.innerWidth;
+      height = bgCanvas.height = window.innerHeight;
       
-      if (line.y < 100) opacity *= (line.y / 100);
-      if (line.y > canvas.height - 100) opacity *= ((canvas.height - line.y) / 100);
-      
-      if (opacity < 0) opacity = 0;
-      
-      ctx.fillStyle = `rgba(16, 185, 129, ${opacity})`;
-      ctx.fillText(line.text, colX, line.y);
-      
-      line.y -= 0.35;
-    });
-    
-    // Roll top line off screen
-    if (terminalLines[c][0] && terminalLines[c][0].y < -lineSpacing) {
-      terminalLines[c].shift();
-      const lastLine = terminalLines[c][terminalLines[c].length - 1];
-      const newY = lastLine ? lastLine.y + lineSpacing : canvas.height;
-      terminalLines[c].push({
-        text: logTemplates[Math.floor(Math.random() * logTemplates.length)],
-        y: newY
-      });
-    }
-  }
-  
-  requestAnimationFrame(animateCanvas);
-}
-
-window.addEventListener('resize', initCanvas);
-initCanvas();
-requestAnimationFrame(animateCanvas);
-
-
-// --- TEXT DECRYPTION SCRAMBLER ---
-function scrambleText(element, originalText) {
-  const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz#@$%&+[]{}';
-  let iterations = 0;
-  
-  const interval = setInterval(() => {
-    element.innerText = originalText
-      .split('')
-      .map((char, index) => {
-        if (index < iterations) {
-          return originalText[index];
+      gridPoints = [];
+      for (let x = 0; x < width + gridSpacing; x += gridSpacing) {
+        for (let y = 0; y < height + gridSpacing; y += gridSpacing) {
+          gridPoints.push({
+            x: x,
+            y: y,
+            baseX: x,
+            baseY: y,
+            vx: 0,
+            vy: 0,
+            angle: Math.random() * Math.PI * 2,
+            speed: 0.15 + Math.random() * 0.2
+          });
         }
-        if (char === ' ') return ' ';
-        return chars[Math.floor(Math.random() * chars.length)];
-      })
-      .join('');
-      
-    if (iterations >= originalText.length) {
-      clearInterval(interval);
-    }
-    iterations += 1 / 3;
-    playTick();
-  }, 22);
-}
-
-// Scramble visual cards elements on hover
-document.querySelectorAll('.cyber-card h3').forEach(title => {
-  const original = title.innerText;
-  title.addEventListener('mouseenter', () => {
-    scrambleText(title, original);
-  });
-});
-
-document.querySelectorAll('.project-card h3').forEach(title => {
-  const original = title.innerText;
-  title.addEventListener('mouseenter', () => {
-    scrambleText(title, original);
-  });
-});
-
-
-// --- WIDGET 1: PASSWORD COMPLEXITY AUDITOR ---
-const auditInput = document.getElementById('audit-input');
-const auditEntropy = document.getElementById('audit-entropy');
-const auditStrength = document.getElementById('audit-strength');
-const auditCrackTime = document.getElementById('audit-cracktime');
-
-if (auditInput) {
-  auditInput.addEventListener('input', () => {
-    const val = auditInput.value;
-    playTick();
-    
-    if (val.length === 0) {
-      auditEntropy.innerText = "0 bits";
-      auditEntropy.className = "val text-error";
-      auditStrength.innerText = "WEAK";
-      auditStrength.className = "val text-error";
-      auditCrackTime.innerText = "Instantly (<0.01 seconds)";
-      auditCrackTime.className = "val text-error";
-      return;
-    }
-    
-    let R = 0;
-    if (/[a-z]/.test(val)) R += 26;
-    if (/[A-Z]/.test(val)) R += 26;
-    if (/[0-9]/.test(val)) R += 10;
-    if (/[^a-zA-Z0-9]/.test(val)) R += 33;
-    
-    const entropy = Math.round(val.length * Math.log2(R));
-    auditEntropy.innerText = `${entropy} bits`;
-    
-    const guesses = Math.pow(2, entropy);
-    const secondsToCrack = guesses / 1e9; // assuming 1G guesses/sec
-    
-    let timeText = "";
-    let colorClass = "text-error";
-    let strengthText = "WEAK";
-    
-    if (entropy < 35) {
-      timeText = "Instantly (<0.01 seconds)";
-      strengthText = "WEAK";
-      colorClass = "text-error";
-    } else if (entropy < 55) {
-      strengthText = "MODERATE";
-      colorClass = "text-accent";
-      if (secondsToCrack < 60) {
-        timeText = `${Math.round(secondsToCrack)} seconds`;
-      } else if (secondsToCrack < 3600) {
-        timeText = `${Math.round(secondsToCrack / 60)} minutes`;
-      } else {
-        timeText = `${Math.round(secondsToCrack / 3600)} hours`;
-      }
-    } else {
-      strengthText = "SECURE";
-      colorClass = "text-success";
-      const days = secondsToCrack / 86400;
-      if (days < 365) {
-        timeText = `${Math.round(days)} days`;
-      } else if (days < 36500) {
-        timeText = `${Math.round(days / 365)} years`;
-      } else {
-        timeText = "Centuries / Bruteforce Resistant";
       }
     }
-    
-    auditEntropy.className = `val ${colorClass}`;
-    auditStrength.innerText = strengthText;
-    auditStrength.className = `val ${colorClass}`;
-    auditCrackTime.innerText = timeText;
-    auditCrackTime.className = `val ${colorClass}`;
-  });
-}
 
+    window.addEventListener('mousemove', (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
 
-// --- WIDGET 2: SIMULATED OCR LABEL SCANNER ---
-const ocrBtn = document.getElementById('trigger-ocr-btn');
-const ocrLaser = document.querySelector('.laser-scanner-line');
-const ocrOutput = document.getElementById('ocr-output-log');
+    window.addEventListener('mouseleave', () => {
+      mouse.x = null;
+      mouse.y = null;
+    });
 
-if (ocrBtn && ocrLaser && ocrOutput) {
-  ocrBtn.addEventListener('click', () => {
-    if (ocrLaser.classList.contains('scanning')) return;
+    window.addEventListener('resize', resizeBgCanvas);
+    resizeBgCanvas();
+
+    let animationTime = 0;
+    function animateBgMesh() {
+      bgCtx.clearRect(0, 0, width, height);
+      animationTime += 0.005;
+
+      bgCtx.fillStyle = 'rgba(16, 185, 129, 0.015)';
+      bgCtx.strokeStyle = 'rgba(255, 255, 255, 0.012)';
+      bgCtx.lineWidth = 0.5;
+
+      gridPoints.forEach(point => {
+        // Subtle ambient wave motion
+        point.angle += 0.01;
+        let waveX = Math.sin(point.angle + animationTime) * 8;
+        let waveY = Math.cos(point.angle + animationTime) * 8;
+
+        let targetX = point.baseX + waveX;
+        let targetY = point.baseY + waveY;
+
+        // Mouse attraction/repel
+        if (mouse.x !== null && mouse.y !== null) {
+          let dx = mouse.x - targetX;
+          let dy = mouse.y - targetY;
+          let dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < mouse.radius) {
+            let force = (mouse.radius - dist) / mouse.radius;
+            // Push points away slightly
+            targetX -= (dx / dist) * force * 15;
+            targetY -= (dy / dist) * force * 15;
+          }
+        }
+
+        // Interpolate point towards current target
+        point.x += (targetX - point.x) * 0.1;
+        point.y += (targetY - point.y) * 0.1;
+
+        // Draw small mesh dots
+        bgCtx.beginPath();
+        bgCtx.arc(point.x, point.y, 0.8, 0, Math.PI * 2);
+        bgCtx.fill();
+      });
+
+      // Draw faint connections for grid neighbors (horizontal only for clean tech lines)
+      bgCtx.beginPath();
+      for (let i = 0; i < gridPoints.length; i++) {
+        // Connect to next point on the right (if it shares same Y grid base)
+        const next = gridPoints[i + 1];
+        if (next && next.baseY === gridPoints[i].baseY && Math.abs(next.x - gridPoints[i].x) < gridSpacing * 1.5) {
+          bgCtx.moveTo(gridPoints[i].x, gridPoints[i].y);
+          bgCtx.lineTo(next.x, next.y);
+        }
+      }
+      bgCtx.stroke();
+
+      requestAnimationFrame(animateBgMesh);
+    }
+    animateBgMesh();
+  }
+
+  // --- EFFECT 11: HERO PARALLAX LAYER ---
+  const heroParallaxBg = document.querySelector('.parallax-bg');
+  if (heroParallaxBg) {
+    window.addEventListener('scroll', () => {
+      let scrollY = window.scrollY;
+      // Shift background down slightly slower to simulate background distance depth
+      heroParallaxBg.style.transform = `translateY(${scrollY * 0.35}px)`;
+    });
+  }
+
+  // --- EFFECT 18: TEXT SCROLL ON REVEAL ---
+  const revealParagraph = document.querySelector('.reveal-paragraph');
+  if (revealParagraph) {
+    const rawText = revealParagraph.innerText;
+    const words = rawText.split(' ');
+    // Wrap each word in a custom reveal span
+    revealParagraph.innerHTML = words.map(w => `<span class="reveal-word">${w}</span>`).join(' ');
     
-    playBeep(600, 0.2);
-    ocrLaser.classList.add('scanning');
-    ocrOutput.innerText = "System: Scanner initializing. Targeting product label vectors...";
-    ocrBtn.disabled = true;
+    const wordSpans = revealParagraph.querySelectorAll('.reveal-word');
     
-    setTimeout(() => {
-      ocrOutput.innerText = "System: Running text extraction algorithms over label area...";
-      playBeep(650, 0.15);
-    }, 1000);
-    
-    setTimeout(() => {
-      ocrOutput.innerText = "System: Compiling extracted nutrition index metrics...";
-      playBeep(700, 0.12);
-    }, 2000);
-    
-    setTimeout(() => {
-      ocrLaser.classList.remove('scanning');
-      ocrBtn.disabled = false;
-      playSuccess();
+    function checkWordReveal() {
+      const rect = revealParagraph.getBoundingClientRect();
+      const winHeight = window.innerHeight;
       
-      const parsedData = {
-        scan_status: "COMPLETED",
-        label_recognized: "NUTRITION_FACTS",
-        extracted_fields: {
-          calories: "240 kcal",
-          total_fat: "8 grams",
-          sodium: "160 milligrams",
-          sugars: "12 grams"
-        },
-        audit_verdict: "INTEGRITY CRITERIA MET"
-      };
+      // Calculate scroll progress relative to the viewport height
+      // 0.8: enters bottom area; 0.2: exits top area
+      const triggerStart = winHeight * 0.85;
+      const triggerEnd = winHeight * 0.15;
       
-      ocrOutput.innerHTML = `<pre class="text-xs text-success" style="margin: 0; line-height: 1.2;">${JSON.stringify(parsedData, null, 2)}</pre>`;
-    }, 3200);
-  });
-}
+      const elementHeight = rect.height;
+      const currentPos = rect.top;
+      
+      // Map progress from 0 (below screen) to 1 (passed screen)
+      let progress = (triggerStart - currentPos) / (triggerStart - triggerEnd + elementHeight);
+      progress = Math.max(0, Math.min(1, progress)); // clamp between 0 and 1
+      
+      // Scale progress to reveal index
+      const revealThreshold = Math.floor(progress * wordSpans.length * 1.4 - wordSpans.length * 0.15);
+      
+      wordSpans.forEach((span, idx) => {
+        if (idx <= revealThreshold) {
+          span.classList.add('active');
+        } else {
+          span.classList.remove('active');
+        }
+      });
+    }
+    
+    window.addEventListener('scroll', checkWordReveal);
+    window.addEventListener('resize', checkWordReveal);
+    checkWordReveal(); // Initial check
+  }
 
-
-// --- WIDGET 3: ACTIVE SECURITY NODE CANVAS ---
-const nodesCanvas = document.getElementById('nodes-canvas');
-const activePathsEl = document.getElementById('nodes-active-paths');
-
-if (nodesCanvas) {
-  const nCtx = nodesCanvas.getContext('2d');
+  // --- EFFECT 7: STICKY SECTIONS INTERSECTION LINKS ---
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-item');
   
-  let canvasWidth = 0;
-  let canvasHeight = 0;
-  let localNodes = [];
-  const totalLocalNodes = 25;
-  const linkRange = 70;
-  
-  const localMouse = {
-    x: null,
-    y: null,
-    radius: 70
+  const sectionObserverOptions = {
+    root: null,
+    rootMargin: '-30% 0px -40% 0px', // trigger when section occupies viewport center
+    threshold: 0.15
   };
   
-  function resizeLocalCanvas() {
-    canvasWidth = nodesCanvas.parentElement.getBoundingClientRect().width;
-    canvasHeight = nodesCanvas.parentElement.getBoundingClientRect().height;
-    nodesCanvas.width = canvasWidth;
-    nodesCanvas.height = canvasHeight;
-    
-    localNodes = [];
-    for (let i = 0; i < totalLocalNodes; i++) {
-      localNodes.push({
-        x: Math.random() * canvasWidth,
-        y: Math.random() * canvasHeight,
-        vx: Math.random() * 0.4 - 0.2,
-        vy: Math.random() * 0.4 - 0.2,
-        size: Math.random() * 2 + 1
-      });
-    }
-  }
-  
-  nodesCanvas.addEventListener('mousemove', (e) => {
-    const rect = nodesCanvas.getBoundingClientRect();
-    localMouse.x = e.clientX - rect.left;
-    localMouse.y = e.clientY - rect.top;
-  });
-  
-  nodesCanvas.addEventListener('mouseleave', () => {
-    localMouse.x = null;
-    localMouse.y = null;
-  });
-  
-  function drawNodeMesh() {
-    nCtx.clearRect(0, 0, canvasWidth, canvasHeight);
-    
-    // Update and draw local nodes
-    localNodes.forEach(node => {
-      node.x += node.vx;
-      node.y += node.vy;
-      
-      if (node.x > canvasWidth) node.x = 0;
-      else if (node.x < 0) node.x = canvasWidth;
-      if (node.y > canvasHeight) node.y = 0;
-      else if (node.y < 0) node.y = canvasHeight;
-      
-      // cursor attraction force
-      if (localMouse.x != null && localMouse.y != null) {
-        let dx = localMouse.x - node.x;
-        let dy = localMouse.y - node.y;
-        let distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < localMouse.radius) {
-          const force = (localMouse.radius - distance) / localMouse.radius;
-          node.x += dx * force * 0.02;
-          node.y += dy * force * 0.02;
-        }
-      }
-      
-      nCtx.fillStyle = 'rgba(6, 182, 212, 0.6)';
-      nCtx.beginPath();
-      nCtx.arc(node.x, node.y, node.size, 0, Math.PI * 2);
-      nCtx.fill();
-    });
-    
-    // Draw link lines
-    let activeConnectionsCount = 0;
-    for (let i = 0; i < localNodes.length; i++) {
-      for (let j = i + 1; j < localNodes.length; j++) {
-        let dx = localNodes[i].x - localNodes[j].x;
-        let dy = localNodes[i].y - localNodes[j].y;
-        let distance = Math.sqrt(dx * dx + dy * dy);
-        
-        if (distance < linkRange) {
-          let opacity = (1 - (distance / linkRange)) * 0.25;
-          nCtx.strokeStyle = `rgba(13, 148, 136, ${opacity})`;
-          
-          if (localMouse.x != null && localMouse.y != null) {
-            let mDx = localMouse.x - localNodes[i].x;
-            let mDy = localMouse.y - localNodes[i].y;
-            let mDistance = Math.sqrt(mDx * mDx + mDy * mDy);
-            if (mDistance < localMouse.radius) {
-              nCtx.strokeStyle = `rgba(6, 182, 212, ${opacity * 1.5})`;
-              activeConnectionsCount++;
-            }
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.getAttribute('id');
+        navLinks.forEach(link => {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === `#${id}`) {
+            link.classList.add('active');
           }
+        });
+      }
+    });
+  }, sectionObserverOptions);
+  
+  sections.forEach(section => {
+    sectionObserver.observe(section);
+  });
+
+  // --- SKILLS DYNAMIC BARS EXPANSION ---
+  const skillBars = document.querySelectorAll('.skill-fill-line');
+  const skillObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const bar = entry.target;
+        const widthVal = bar.getAttribute('data-width');
+        bar.style.width = widthVal;
+      }
+    });
+  }, { threshold: 0.2 });
+
+  skillBars.forEach(bar => {
+    skillObserver.observe(bar);
+  });
+
+  // --- EXPERIMENTAL NODE MESH CANVAS (Skills Side Graphic) ---
+  const nodesCanvas = document.getElementById('nodes-canvas');
+  if (nodesCanvas) {
+    const nCtx = nodesCanvas.getContext('2d');
+    let cWidth = 0;
+    let cHeight = 0;
+    let nodesList = [];
+    const totalNodesCount = 30;
+    const connectDistance = 85;
+    let localMouse = { x: null, y: null, radius: 85 };
+
+    function resizeLocalCanvas() {
+      const containerRect = nodesCanvas.parentElement.getBoundingClientRect();
+      cWidth = nodesCanvas.width = containerRect.width;
+      cHeight = nodesCanvas.height = containerRect.height;
+      
+      nodesList = [];
+      for (let i = 0; i < totalNodesCount; i++) {
+        nodesList.push({
+          x: Math.random() * cWidth,
+          y: Math.random() * cHeight,
+          vx: (Math.random() - 0.5) * 0.4,
+          vy: (Math.random() - 0.5) * 0.4,
+          size: Math.random() * 2 + 1
+        });
+      }
+    }
+
+    nodesCanvas.addEventListener('mousemove', (e) => {
+      const rect = nodesCanvas.getBoundingClientRect();
+      localMouse.x = e.clientX - rect.left;
+      localMouse.y = e.clientY - rect.top;
+    });
+
+    nodesCanvas.addEventListener('mouseleave', () => {
+      localMouse.x = null;
+      localMouse.y = null;
+    });
+
+    window.addEventListener('resize', resizeLocalCanvas);
+    resizeLocalCanvas();
+
+    const activePathsEl = document.getElementById('nodes-active-paths');
+
+    function drawNodeNetwork() {
+      nCtx.clearRect(0, 0, cWidth, cHeight);
+      
+      // Update and draw nodes
+      nodesList.forEach(node => {
+        node.x += node.vx;
+        node.y += node.vy;
+        
+        // Edge bouncing
+        if (node.x > cWidth || node.x < 0) node.vx *= -1;
+        if (node.y > cHeight || node.y < 0) node.vy *= -1;
+
+        // Cursor magnetic gravity force
+        if (localMouse.x !== null && localMouse.y !== null) {
+          let dx = localMouse.x - node.x;
+          let dy = localMouse.y - node.y;
+          let distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance < localMouse.radius) {
+            const pullForce = (localMouse.radius - distance) / localMouse.radius;
+            node.x += dx * pullForce * 0.025;
+            node.y += dy * pullForce * 0.025;
+          }
+        }
+
+        nCtx.fillStyle = 'rgba(16, 185, 129, 0.65)';
+        nCtx.beginPath();
+        nCtx.arc(node.x, node.y, node.size, 0, Math.PI * 2);
+        nCtx.fill();
+      });
+
+      // Connecting lines
+      let activeConnections = 0;
+      for (let i = 0; i < nodesList.length; i++) {
+        for (let j = i + 1; j < nodesList.length; j++) {
+          let dx = nodesList[i].x - nodesList[j].x;
+          let dy = nodesList[i].y - nodesList[j].y;
+          let distance = Math.sqrt(dx * dx + dy * dy);
           
-          nCtx.lineWidth = 0.5;
-          nCtx.beginPath();
-          nCtx.moveTo(localNodes[i].x, localNodes[i].y);
-          nCtx.lineTo(localNodes[j].x, localNodes[j].y);
-          nCtx.stroke();
+          if (distance < connectDistance) {
+            let opacity = (1 - (distance / connectDistance)) * 0.22;
+            nCtx.strokeStyle = `rgba(16, 185, 129, ${opacity})`;
+            
+            // Brighten connecting paths near user cursor
+            if (localMouse.x !== null && localMouse.y !== null) {
+              let mDx = localMouse.x - nodesList[i].x;
+              let mDy = localMouse.y - nodesList[i].y;
+              let mDistance = Math.sqrt(mDx * mDx + mDy * mDy);
+              if (mDistance < localMouse.radius) {
+                nCtx.strokeStyle = `rgba(52, 211, 153, ${opacity * 2.2})`;
+                activeConnections++;
+              }
+            }
+
+            nCtx.lineWidth = 0.6;
+            nCtx.beginPath();
+            nCtx.moveTo(nodesList[i].x, nodesList[i].y);
+            nCtx.lineTo(nodesList[j].x, nodesList[j].y);
+            nCtx.stroke();
+          }
         }
       }
+
+      if (activePathsEl) {
+        activePathsEl.innerText = `${activeConnections} paths active`;
+      }
+
+      requestAnimationFrame(drawNodeNetwork);
     }
-    
-    // Update count in diagnostics
-    if (activePathsEl) {
-      activePathsEl.innerText = `${activeConnectionsCount} links active`;
-    }
-    
-    requestAnimationFrame(drawNodeMesh);
+    drawNodeNetwork();
   }
-  
-  resizeLocalCanvas();
-  window.addEventListener('resize', resizeLocalCanvas);
-  drawNodeMesh();
-}
 
-
-// --- INTERSECTION OBSERVER FOR SCROLL EFFECTS ---
-const scrollSections = document.querySelectorAll('.reveal-on-scroll');
-const navLinks = document.querySelectorAll('.nav-link');
-const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
-
-const observerOptions = {
-  root: null,
-  rootMargin: '-20% 0px -25% 0px', 
-  threshold: 0.1
-};
-
-const sectionObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-      
-      const id = entry.target.getAttribute('id');
-      updateActiveNavLink(id);
-      
-      const header = entry.target.querySelector('.decrypt-header');
-      if (header && !header.classList.contains('scrambled')) {
-        scrambleText(header, header.innerText);
-        header.classList.add('scrambled');
-      }
-      
-      if (id === 'skills') {
-        animateSkillsBars();
-      }
-      
-      if (id === 'experience') {
-        const timeline = entry.target.querySelector('.timeline');
-        if (timeline) timeline.classList.add('visible');
-      }
-    }
-  });
-}, observerOptions);
-
-scrollSections.forEach(section => {
-  sectionObserver.observe(section);
-});
-
-function updateActiveNavLink(activeId) {
-  navLinks.forEach(link => {
-    link.classList.remove('active');
-    if (link.getAttribute('href') === `#${activeId}`) {
-      link.classList.add('active');
-    }
-  });
-  
-  mobileNavLinks.forEach(link => {
-    link.classList.remove('active');
-    if (link.getAttribute('href') === `#${activeId}`) {
-      link.classList.add('active');
-    }
-  });
-}
-
-function animateSkillsBars() {
-  const bars = document.querySelectorAll('.skill-fill');
-  bars.forEach(bar => {
-    const widthVal = bar.getAttribute('data-width');
-    bar.style.width = widthVal;
-  });
-}
-
-// Handle smooth scroll clicks manual alignment
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-  anchor.addEventListener('click', function(e) {
-    e.preventDefault();
-    const targetId = this.getAttribute('href');
-    const targetElement = document.querySelector(targetId);
-    const scrollContainer = document.querySelector('.scroll-container');
+  // --- EXPERIMENTAL TIMELINE SCROLL TRIGGER ---
+  const timelineSection = document.getElementById('experience');
+  if (timelineSection) {
+    const timelineItems = timelineSection.querySelectorAll('.timeline-item');
+    const timelineLineTrack = timelineSection.querySelector('.timeline-line-track');
     
-    if (targetElement && scrollContainer) {
-      playSuccess();
-      
-      const elementTop = targetElement.offsetTop;
-      scrollContainer.scrollTo({
-        top: elementTop - 15,
-        behavior: 'smooth'
+    const timelineObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+          
+          // Smoothly animate the line track height down on reveal
+          if (timelineLineTrack) {
+            timelineLineTrack.style.height = '100%';
+          }
+        }
       });
+    }, { threshold: 0.15 });
+
+    timelineItems.forEach(item => {
+      timelineObserver.observe(item);
+    });
+  }
+
+  // --- WIDGET 1: PASSWORD COMPLEXITY AUDITOR ---
+  const auditInput = document.getElementById('audit-input');
+  const auditEntropy = document.getElementById('audit-entropy');
+  const auditStrength = document.getElementById('audit-strength');
+  const auditCracktime = document.getElementById('audit-cracktime');
+
+  if (auditInput) {
+    auditInput.addEventListener('input', () => {
+      const val = auditInput.value;
       
-      const cleanId = targetId.substring(1);
-      updateActiveNavLink(cleanId);
-    }
-  });
+      if (val.length === 0) {
+        auditEntropy.innerText = "0 bits";
+        auditEntropy.className = "result-val text-muted";
+        auditStrength.innerText = "NONE";
+        auditStrength.className = "result-val text-muted";
+        auditCracktime.innerText = "Instantly (<0.01s)";
+        auditCracktime.className = "result-val text-muted";
+        return;
+      }
+
+      // Calculate character set pool size R
+      let R = 0;
+      if (/[a-z]/.test(val)) R += 26;
+      if (/[A-Z]/.test(val)) R += 26;
+      if (/[0-9]/.test(val)) R += 10;
+      if (/[^a-zA-Z0-9]/.test(val)) R += 33; // Symbols pool approx size
+
+      const entropy = Math.round(val.length * Math.log2(R));
+      auditEntropy.innerText = `${entropy} bits`;
+
+      const guesses = Math.pow(2, entropy);
+      const secondsToCrack = guesses / 1e9; // 1 Billion guesses/sec hashing benchmark
+
+      let timeText = "";
+      let colorClass = "";
+      let strengthText = "";
+
+      if (entropy < 35) {
+        strengthText = "WEAK";
+        timeText = "Instantly (<0.01s)";
+        colorClass = "text-accent"; // Reddish/Orange alert in original theme, we'll keep custom colors
+        auditEntropy.style.color = '#f43f5e';
+        auditStrength.style.color = '#f43f5e';
+        auditCracktime.style.color = '#f43f5e';
+      } else if (entropy < 55) {
+        strengthText = "MODERATE";
+        colorClass = "text-blue";
+        auditEntropy.style.color = 'var(--blue-color)';
+        auditStrength.style.color = 'var(--blue-color)';
+        auditCracktime.style.color = 'var(--blue-color)';
+        if (secondsToCrack < 60) {
+          timeText = `${Math.round(secondsToCrack)} seconds`;
+        } else if (secondsToCrack < 3600) {
+          timeText = `${Math.round(secondsToCrack / 60)} minutes`;
+        } else {
+          timeText = `${Math.round(secondsToCrack / 3600)} hours`;
+        }
+      } else {
+        strengthText = "SECURE";
+        colorClass = "text-success";
+        auditEntropy.style.color = 'var(--primary-color)';
+        auditStrength.style.color = 'var(--primary-color)';
+        auditCracktime.style.color = 'var(--primary-color)';
+        const days = secondsToCrack / 86400;
+        if (days < 365) {
+          timeText = `${Math.round(days)} days`;
+        } else if (days < 36500) {
+          timeText = `${Math.round(days / 365)} years`;
+        } else {
+          timeText = "Centuries / Resistant";
+        }
+      }
+
+      auditStrength.innerText = strengthText;
+      auditCracktime.innerText = timeText;
+    });
+  }
+
+  // --- WIDGET 2: SIMULATED OCR SCANNER WIDGET ---
+  const ocrBtn = document.getElementById('trigger-ocr-btn');
+  const ocrLaser = document.querySelector('.ocr-laser-line');
+  const ocrOutput = document.getElementById('ocr-output-log');
+
+  if (ocrBtn && ocrLaser && ocrOutput) {
+    ocrBtn.addEventListener('click', () => {
+      if (ocrLaser.classList.contains('sweeping')) return;
+
+      ocrLaser.classList.add('sweeping');
+      ocrOutput.innerText = "System: Initializing laser grid calibration...";
+      ocrBtn.disabled = true;
+
+      setTimeout(() => {
+        ocrOutput.innerText = "System: Target locked. Scanning nutrition label vector metrics...";
+      }, 900);
+
+      setTimeout(() => {
+        ocrOutput.innerText = "System: Parsing character matrix indexes [OCR Module ENG]...";
+      }, 1900);
+
+      setTimeout(() => {
+        ocrLaser.classList.remove('sweeping');
+        ocrBtn.disabled = false;
+
+        const mockData = {
+          status: "SUCCESS_DECRYPTED",
+          fields_mapped: {
+            item_type: "NUTRITION_FACTS",
+            calories_count: "240 kcal",
+            total_fat_grams: "8g",
+            sodium_milligrams: "160mg",
+            sugars_grams: "12g"
+          },
+          confidence_rating: "99.8%"
+        };
+
+        ocrOutput.innerHTML = `<pre style="line-height: 1.35; margin: 0; color: var(--primary-color);">${JSON.stringify(mockData, null, 2)}</pre>`;
+      }, 3000);
+    });
+  }
+
+  // --- TRANSMITTER PACKET FORM HANDLER ---
+  const contactForm = document.getElementById('secure-contact-form');
+  const formStatus = document.getElementById('form-status');
+
+  if (contactForm && formStatus) {
+    contactForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      formStatus.className = 'form-dispatch-status';
+      formStatus.innerText = 'TRANSMITTING TRANSMISSION ENVELOPE [AES-256]...';
+      formStatus.style.display = 'block';
+
+      setTimeout(() => {
+        formStatus.innerText = 'TRANSMITTED COMPROMISED PAYLOAD AND SYNCHRONIZED ROUTE PEERS.';
+        formStatus.classList.add('success');
+        contactForm.reset();
+      }, 2000);
+    });
+  }
+
+  // --- UTILITY SYSTEMS (Ping and Timestamps) ---
+  const clockElement = document.getElementById('sys-clock');
+  if (clockElement) {
+    setInterval(() => {
+      const now = new Date();
+      clockElement.innerText = now.toTimeString().split(' ')[0];
+    }, 1000);
+  }
+
+  const pingElement = document.getElementById('ping-value');
+  if (pingElement) {
+    setInterval(() => {
+      const randPing = Math.floor(Math.random() * 12) + 6;
+      pingElement.innerText = `${randPing}ms`;
+    }, 4000);
+  }
+
 });
-
-// Track scroll container position for backup nav linkage
-const scrollContainer = document.querySelector('.scroll-container');
-if (scrollContainer) {
-  scrollContainer.addEventListener('scroll', () => {
-    if (scrollContainer.scrollTop < 100) {
-      updateActiveNavLink('home');
-    }
-  });
-}
-
-
-// --- SECURE PACKET MESSAGE FORM DELAY ---
-const contactForm = document.getElementById('secure-contact-form');
-const formStatus = document.getElementById('form-status');
-
-if (contactForm) {
-  contactForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    
-    formStatus.className = 'form-status-msg';
-    formStatus.innerText = 'PACKING MESSAGE ENVELOPE [AES-256]...';
-    formStatus.style.display = 'block';
-    playBeep(480, 0.2);
-    
-    setTimeout(() => {
-      formStatus.innerText = 'CONNECTING TO OVERLAY PEER RELAYS...';
-      playBeep(560, 0.15);
-    }, 900);
-    
-    setTimeout(() => {
-      formStatus.innerText = 'MESSAGE PACKET TRANSMITTED & VERIFIED AT NODE hash:SHA256.';
-      formStatus.classList.add('success');
-      playSuccess();
-      
-      contactForm.reset();
-    }, 2200);
-  });
-}
-
-
-// --- SYSTEM TIMESTAMPS ---
-setInterval(() => {
-  const clock = document.getElementById('sys-clock');
-  if (clock) {
-    const d = new Date();
-    clock.innerText = d.toTimeString().split(' ')[0];
-  }
-}, 1000);
-
-setInterval(() => {
-  const ping = document.getElementById('ping-value');
-  if (ping) {
-    const latency = Math.floor(Math.random() * 15) + 8;
-    ping.innerText = latency + 'ms';
-  }
-}, 5000);
