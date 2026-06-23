@@ -13,70 +13,88 @@
 </head>
 <body>
 
-  <!-- Dot background & floating animated mesh canvas -->
-  <div class="bg-grid"></div>
-  <canvas id="background-canvas"></canvas>
+  <!-- Shifting gradient background is handled via CSS on body::before -->
+  <!-- Antigravity floating particles canvas backdrop -->
+  <canvas id="antigravity-canvas"></canvas>
 
-  <!-- Glowing background orbs -->
-  <div class="gradient-orbs">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-  </div>
+  <!-- Custom trailing cursor glow sphere -->
+  <div class="cursor-trailer"></div>
 
-  <!-- HEADER NAVIGATION BAR -->
-  <div class="header-container">
-    <header class="nav-capsule">
-      <div class="nav-brand font-mono">
-        ATHUL<span class="text-accent">//</span>SEC_NODE
-      </div>
-      
-      <nav class="nav-links">
-        <a href="#home" class="nav-item active">HOME</a>
-        <a href="#about" class="nav-item">OVERVIEW</a>
-        <a href="#skills" class="nav-item">SKILLS</a>
-        <a href="#projects" class="nav-item">PROJECTS</a>
-        <a href="#experience" class="nav-item">EXPERIENCE</a>
-        <a href="#certs" class="nav-item">KEYS</a>
-        <a href="#contact" class="nav-item">CONTACT</a>
-      </nav>
-
-      <div class="nav-ping">
-        <span class="ping-indicator"></span>
-        <span id="ping-value">12ms</span>
-      </div>
-    </header>
-  </div>
-
-  <!-- HERO SECTION WITH PARALLAX -->
-  <section id="home" class="hero-parallax-wrapper">
-    <div class="parallax-bg"></div>
-    
-    <div class="hero-content">
-      <div class="hero-badge">
-        <span class="ping-indicator"></span> Secure Systems Auditor // Security Consultant
-      </div>
-      
-      <h1 class="hero-title">
-        Securing Digital Assets,<br>
-        <span class="gradient-text">Auditing Infrastructure</span>
-      </h1>
-      
-      <p class="hero-subtitle">
-        I'm <span class="text-white font-bold">Athul Varghese Joby</span>. A Cybersecurity specialist specializing in web application vulnerability assessments, OWASP compliance auditing, and CCNA network security configuration.
-      </p>
-      
-      <div class="hero-buttons">
-        <a href="#projects" class="btn btn-primary">
-          Explore Projects <i class="fa-solid fa-arrow-right"></i>
-        </a>
-        <a href="#contact" class="btn btn-secondary">Get in Touch</a>
-      </div>
+  <!-- FIXED VERTICAL SIDEBAR NAVIGATION -->
+  <nav class="sidebar-nav">
+    <div class="sidebar-brand">
+      <div class="brand-dot"></div>
     </div>
-  </section>
+    <div class="sidebar-items">
+      <a href="#home" class="sidebar-item active" title="Home">
+        <i class="fa-solid fa-house"></i>
+      </a>
+      <a href="#about" class="sidebar-item" title="Overview">
+        <i class="fa-solid fa-user"></i>
+      </a>
+      <a href="#skills" class="sidebar-item" title="Skills">
+        <i class="fa-solid fa-layer-group"></i>
+      </a>
+      <a href="#projects" class="sidebar-item" title="Projects">
+        <i class="fa-solid fa-code"></i>
+      </a>
+      <a href="#experience" class="sidebar-item" title="Experience">
+        <i class="fa-solid fa-briefcase"></i>
+      </a>
+      <a href="#certs" class="sidebar-item" title="Certifications">
+        <i class="fa-solid fa-award"></i>
+      </a>
+      <a href="#contact" class="sidebar-item" title="Contact">
+        <i class="fa-solid fa-envelope"></i>
+      </a>
+    </div>
+  </nav>
 
-  <main class="container">
-    
-    <!-- SECTION 01: SYSTEM OVERVIEW (sticky layout + scroll reveal text) -->
+  <!-- PING INDICATOR (STAYS ON SCREEN OR CORNER) -->
+  <div class="nav-ping-fixed">
+    <span class="ping-indicator"></span>
+    <span id="ping-value">12ms</span>
+  </div>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="main-content-layout">
+
+    <!-- HERO SECTION -->
+    <section id="home" class="hero-section">
+      <div class="hero-glass-container">
+        
+        <div class="hero-avatar-wrapper">
+          <div class="glowing-ring"></div>
+          <img src="avatar-nobg.png" alt="Athul Varghese Joby" class="hero-avatar">
+        </div>
+
+        <div class="hero-text-container">
+          <div class="hero-badge">
+            <span class="ping-indicator"></span> Secure Systems Auditor // Security Consultant
+          </div>
+          
+          <h1 class="hero-title">
+            Hi, I'm <span class="gradient-text">Athul Varghese</span>
+          </h1>
+          
+          <h2 class="hero-typed-role font-mono">
+            I'm a <span id="typed-text">Cybersecurity Specialist</span><span class="typed-cursor">|</span>
+          </h2>
+          
+          <p class="hero-subtitle">
+            Specializing in web application vulnerability assessments, OWASP compliance auditing, and CCNA network security configuration. Securing infrastructure, defending data assets.
+          </p>
+
+          <div class="hero-actions">
+            <a href="#projects" class="btn btn-primary">View My Work</a>
+            <a href="#contact" class="btn btn-secondary">Establish Link</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 01: SYSTEM OVERVIEW -->
     <section id="about" class="split-section">
       <aside class="sticky-aside">
         <span class="section-number">01 // OVERVIEW</span>
@@ -134,146 +152,169 @@
       </div>
     </section>
 
-    <!-- SECTION 02: VULNERABILITY RATINGS (sticky layout + dynamic bars + node canvas) -->
+    <!-- SECTION 02: SKILLS -->
     <section id="skills" class="split-section">
       <aside class="sticky-aside">
         <span class="section-number">02 // SKILLS</span>
-        <h2 class="section-title">Vulnerability Ratings</h2>
+        <h2 class="section-title">My Skills</h2>
         <div class="section-decor"></div>
       </aside>
 
       <div class="content-aside">
-        <div class="skills-layout">
+        <div class="skills-layout-split">
           
-          <div class="skills-wrapper">
-            <!-- Part 1 -->
-            <div>
-              <h3 class="skill-category-title">SECURITY ASSESSMENTS</h3>
-              <div class="skill-bars-list">
-                <div class="skill-item">
-                  <div class="skill-header">
-                    <span>Web Application Pen-testing</span>
-                    <span>85%</span>
+          <!-- Graphic panel matching the robotic hand illustration in the mockup -->
+          <div class="skills-graphic-panel">
+            <div class="skills-graphic-container accent-hover">
+              <img src="skills_graphic.png" alt="Cyber Security Mesh" class="skills-graphic-img">
+              <div class="graphic-glow-effect"></div>
+            </div>
+          </div>
+
+          <!-- Skills details panel -->
+          <div class="skills-details-panel">
+            <p class="skills-bio-intro">
+              I am a passionate security student and system auditor with over 2 years of practical lab experience building, testing, and securing digital structures.
+            </p>
+            
+            <div class="skills-wrapper">
+              <!-- Part 1 -->
+              <div>
+                <h3 class="skill-category-title">SECURITY ASSESSMENTS</h3>
+                <div class="skill-bars-list">
+                  <div class="skill-item">
+                    <div class="skill-header">
+                      <span>Web Application Pen-testing</span>
+                      <span>85%</span>
+                    </div>
+                    <div class="skill-bar-track">
+                      <div class="skill-fill-line" data-width="85%"></div>
+                    </div>
                   </div>
-                  <div class="skill-bar-track">
-                    <div class="skill-fill-line" data-width="85%"></div>
+                  <div class="skill-item">
+                    <div class="skill-header">
+                      <span>Vulnerability Assessments</span>
+                      <span>80%</span>
+                    </div>
+                    <div class="skill-bar-track">
+                      <div class="skill-fill-line" data-width="80%"></div>
+                    </div>
                   </div>
-                </div>
-                <div class="skill-item">
-                  <div class="skill-header">
-                    <span>Vulnerability Assessments</span>
-                    <span>80%</span>
+                  <div class="skill-item">
+                    <div class="skill-header">
+                      <span>OWASP Top 10 Auditing</span>
+                      <span>90%</span>
+                    </div>
+                    <div class="skill-bar-track">
+                      <div class="skill-fill-line" data-width="90%"></div>
+                    </div>
                   </div>
-                  <div class="skill-bar-track">
-                    <div class="skill-fill-line" data-width="80%"></div>
-                  </div>
-                </div>
-                <div class="skill-item">
-                  <div class="skill-header">
-                    <span>OWASP Top 10 Auditing</span>
-                    <span>90%</span>
-                  </div>
-                  <div class="skill-bar-track">
-                    <div class="skill-fill-line" data-width="90%"></div>
-                  </div>
-                </div>
-                <div class="skill-item">
-                  <div class="skill-header">
-                    <span>Network Security Fundamentals</span>
-                    <span>75%</span>
-                  </div>
-                  <div class="skill-bar-track">
-                    <div class="skill-fill-line" data-width="75%"></div>
+                  <div class="skill-item">
+                    <div class="skill-header">
+                      <span>Network Security Fundamentals</span>
+                      <span>75%</span>
+                    </div>
+                    <div class="skill-bar-track">
+                      <div class="skill-fill-line" data-width="75%"></div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <!-- Part 2 -->
-            <div style="margin-top: 20px;">
-              <h3 class="skill-category-title">ARSENAL & CODING</h3>
-              <div class="skill-bars-list">
-                <div class="skill-item">
-                  <div class="skill-header">
-                    <span>Kali, Burp Suite, Nmap, Wireshark, Git</span>
-                    <span>85%</span>
+              <!-- Part 2 -->
+              <div style="margin-top: 20px;">
+                <h3 class="skill-category-title">ARSENAL & CODING</h3>
+                <div class="skill-bars-list">
+                  <div class="skill-item">
+                    <div class="skill-header">
+                      <span>Kali, Burp Suite, Nmap, Wireshark, Git</span>
+                      <span>85%</span>
+                    </div>
+                    <div class="skill-bar-track">
+                      <div class="skill-fill-line" data-width="85%"></div>
+                    </div>
                   </div>
-                  <div class="skill-bar-track">
-                    <div class="skill-fill-line" data-width="85%"></div>
+                  <div class="skill-item">
+                    <div class="skill-header">
+                      <span>Python Scripting</span>
+                      <span>80%</span>
+                    </div>
+                    <div class="skill-bar-track">
+                      <div class="skill-fill-line" data-width="80%"></div>
+                    </div>
                   </div>
-                </div>
-                <div class="skill-item">
-                  <div class="skill-header">
-                    <span>Python Scripting</span>
-                    <span>80%</span>
+                  <div class="skill-item">
+                    <div class="skill-header">
+                      <span>Java Programming</span>
+                      <span>75%</span>
+                    </div>
+                    <div class="skill-bar-track">
+                      <div class="skill-fill-line" data-width="75%"></div>
+                    </div>
                   </div>
-                  <div class="skill-bar-track">
-                    <div class="skill-fill-line" data-width="80%"></div>
-                  </div>
-                </div>
-                <div class="skill-item">
-                  <div class="skill-header">
-                    <span>Java Programming</span>
-                    <span>75%</span>
-                  </div>
-                  <div class="skill-bar-track">
-                    <div class="skill-fill-line" data-width="75%"></div>
-                  </div>
-                </div>
-                <div class="skill-item">
-                  <div class="skill-header">
-                    <span>SQL Databases (MySQL, MongoDB)</span>
-                    <span>70%</span>
-                  </div>
-                  <div class="skill-bar-track">
-                    <div class="skill-fill-line" data-width="70%"></div>
+                  <div class="skill-item">
+                    <div class="skill-header">
+                      <span>SQL Databases (MySQL, MongoDB)</span>
+                      <span>70%</span>
+                    </div>
+                    <div class="skill-bar-track">
+                      <div class="skill-fill-line" data-width="70%"></div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+        </div>
 
-          <!-- Canvas graphic card -->
-          <div class="glass-card skills-canvas-card accent-hover">
-            <div>
-              <h3 class="skill-category-title" style="margin-bottom: 5px;"><i class="fa-solid fa-circle-nodes"></i> Interactive Node Mesh</h3>
-              <p style="font-size: 0.72rem; color: var(--text-muted);">
-                Hover cursor inside grid matrix to attract network nodes and estimate active paths.
-              </p>
-            </div>
-            
-            <div class="canvas-visual-box">
-              <canvas id="nodes-canvas"></canvas>
-            </div>
-            
-            <div class="canvas-footer-stats">
-              <span>MESH STATUS: ACTIVE</span>
-              <span id="nodes-active-paths" class="text-accent">0 paths active</span>
-            </div>
+        <!-- Node Mesh section placed beautifully in the content flow -->
+        <div class="glass-card skills-canvas-card accent-hover" style="margin-top: 20px;">
+          <div>
+            <h3 class="skill-category-title" style="margin-bottom: 5px;"><i class="fa-solid fa-circle-nodes"></i> Interactive Node Mesh</h3>
+            <p style="font-size: 0.72rem; color: var(--text-muted);">
+              Hover cursor inside grid matrix to attract network nodes and estimate active paths.
+            </p>
           </div>
-
+          
+          <div class="canvas-visual-box">
+            <canvas id="nodes-canvas"></canvas>
+          </div>
+          
+          <div class="canvas-footer-stats">
+            <span>MESH STATUS: ACTIVE</span>
+            <span id="nodes-active-paths" class="text-accent">0 paths active</span>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- SECTION 03: PROJECTS (sticky layout + clean hover deck + widgets) -->
+    <!-- SECTION 03: PROJECTS -->
     <section id="projects" class="split-section">
       <aside class="sticky-aside">
         <span class="section-number">03 // EXPLOITS</span>
-        <h2 class="section-title">Exploit Database</h2>
+        <h2 class="section-title">My Portfolio</h2>
         <div class="section-decor"></div>
       </aside>
 
       <div class="content-aside">
+        <p class="section-subtitle-intro" style="margin-bottom: 10px;">
+          A collection of my recent projects, practical security research, and network configurations.
+        </p>
+
         <div class="projects-grid">
           
           <!-- Card 1 -->
           <div class="glass-card project-card accent-hover">
-            <div class="project-meta">
-              <span>EXPL_REF: 001 // SECURE_OCR</span>
-              <span class="project-tag active">COMPLETED</span>
+            <div class="project-header-container">
+              <div class="project-meta">
+                <span>EXPL_REF: 001 // SECURE_OCR</span>
+                <span class="project-tag active">BUILD COMPLETE</span>
+              </div>
+              <div class="project-image-box">
+                <img src="project_ocr.png" alt="OCR Food Label Scanner" class="project-card-img">
+              </div>
             </div>
-            <div>
+            <div class="project-body-content">
               <h3 class="project-title">OCR Food Label Scanner</h3>
               <p class="project-desc">
                 Developed a Python application to extract nutritional indicators from label packaging. Used EasyOCR/Tesseract OCR engines and custom grayscale preprocessing vectors to optimize text parsing.
@@ -287,11 +328,16 @@
 
           <!-- Card 2 -->
           <div class="glass-card project-card accent-hover">
-            <div class="project-meta">
-              <span>EXPL_REF: 002 // PORTSWIGGER</span>
-              <span class="project-tag active">LABS MET</span>
+            <div class="project-header-container">
+              <div class="project-meta">
+                <span>EXPL_REF: 002 // PORTSWIGGER</span>
+                <span class="project-tag active">LABS MET</span>
+              </div>
+              <div class="project-image-box">
+                <img src="project_portswigger.png" alt="Web Security Labs" class="project-card-img">
+              </div>
             </div>
-            <div>
+            <div class="project-body-content">
               <h3 class="project-title">Web Security Assessment Labs</h3>
               <p class="project-desc">
                 Solved active vulnerability labs covering OWASP Top 10 risks: SQLi, XSS, Path Traversal, SSRF, authentication flow bypass, business logic flaws, and malicious file uploads on PortSwigger Academy.
@@ -305,11 +351,16 @@
 
           <!-- Card 3 -->
           <div class="glass-card project-card accent-hover">
-            <div class="project-meta">
-              <span>EXPL_REF: 003 // THM_CTFS</span>
-              <span class="project-tag active">ROOT ACCESS</span>
+            <div class="project-header-container">
+              <div class="project-meta">
+                <span>EXPL_REF: 003 // THM_CTFS</span>
+                <span class="project-tag active">ROOT ACCESS</span>
+              </div>
+              <div class="project-image-box">
+                <img src="project_tryhackme.png" alt="TryHackMe Practical Labs" class="project-card-img">
+              </div>
             </div>
-            <div>
+            <div class="project-body-content">
               <h3 class="project-title">TryHackMe Practical Labs</h3>
               <p class="project-desc">
                 Completed various virtual offensive security challenges including Mr Robot CTF, Pickle Rick, Burp Suite Repeater manipulation, and simple vulnerability bypass architectures.
@@ -321,13 +372,19 @@
             </div>
           </div>
 
-          <!-- Card 4 -->
+          <!-- Card 4 (Uses default generated mockup placeholder as fallback/variety) -->
           <div class="glass-card project-card accent-hover">
-            <div class="project-meta">
-              <span>EXPL_REF: 004 // NETWORKS</span>
-              <span class="project-tag active">OPERATIONAL</span>
+            <div class="project-header-container">
+              <div class="project-meta">
+                <span>EXPL_REF: 004 // NETWORKS</span>
+                <span class="project-tag active">OPERATIONAL</span>
+              </div>
+              <div class="project-image-box">
+                <!-- Reuses the skills graphic or fallback for hardware network representation -->
+                <img src="skills_graphic.png" alt="Network Setup illustration" class="project-card-img">
+              </div>
             </div>
-            <div>
+            <div class="project-body-content">
               <h3 class="project-title">Network CCTV Layout Setup</h3>
               <p class="project-desc">
                 Designed local wiring network routing schemes and subnet interfaces for multi-node CCTV security feeds. Resolved camera connection diagnostics and packet feed latency errors.
@@ -405,7 +462,7 @@
       </div>
     </section>
 
-    <!-- SECTION 04: EXPERIENCE TIMELINE (sticky layout + dynamic line on scroll) -->
+    <!-- SECTION 04: EXPERIENCE TIMELINE -->
     <section id="experience" class="split-section">
       <aside class="sticky-aside">
         <span class="section-number">04 // EXPERIENCE</span>
@@ -453,7 +510,7 @@
       </div>
     </section>
 
-    <!-- SECTION 05: CERTIFICATIONS (sticky layout + keys cards) -->
+    <!-- SECTION 05: CERTIFICATIONS -->
     <section id="certs" class="split-section">
       <aside class="sticky-aside">
         <span class="section-number">05 // DECRYPTION KEYS</span>
@@ -498,7 +555,7 @@
       </div>
     </section>
 
-    <!-- SECTION 06: CONTACT LINK (sticky layout + channels + transmitter form) -->
+    <!-- SECTION 06: CONTACT LINK -->
     <section id="contact" class="split-section">
       <aside class="sticky-aside">
         <span class="section-number">06 // SECURE LINK</span>
@@ -515,7 +572,7 @@
               <div class="channel-icon-graphic"><i class="fa-solid fa-envelope"></i></div>
               <div class="channel-text-group">
                 <span class="channel-title-lbl">SECURE_MAIL_RELAY</span>
-                <a href="mailto:a********y@gmail.com" class="channel-text-val">a********y@gmail.com</a>
+                <a href="mailto:athulvarghesejoby@gmail.com" class="channel-text-val">athulvarghesejoby@gmail.com</a>
               </div>
             </div>
 
@@ -575,21 +632,21 @@
       </div>
     </section>
 
-  </main>
+    <!-- SITE FOOTER -->
+    <footer class="site-footer">
+      <div class="footer-connection">
+        <span class="ping-indicator"></span>
+        <span>NODE://GATEWAY_CONNECTED</span>
+      </div>
+      <div class="hidden-mobile" style="color: var(--text-dark);">
+        Control is an Illusion.
+      </div>
+      <div>
+        <span>SYSTEM_TIME: <span id="sys-clock">00:00:00</span></span>
+      </div>
+    </footer>
 
-  <!-- SITE FOOTER -->
-  <footer class="site-footer">
-    <div class="footer-connection">
-      <span class="ping-indicator"></span>
-      <span>NODE://GATEWAY_CONNECTED</span>
-    </div>
-    <div class="hidden-mobile" style="color: var(--text-dark);">
-      Control is an Illusion.
-    </div>
-    <div>
-      <span>SYSTEM_TIME: <span id="sys-clock">00:00:00</span></span>
-    </div>
-  </footer>
+  </main>
 
   <script src="script.js"></script>
 </body>

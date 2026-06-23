@@ -2,122 +2,187 @@
    PREMIUM PORTFOLIO INTERACTION CONTROLLER
    ========================================== */
 
-// Ensure script runs after DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
 
-  // --- BACKGROUND CANVAS (DISSOLVING Abstract tech wave grid) ---
-  const bgCanvas = document.getElementById('background-canvas');
-  if (bgCanvas) {
-    const bgCtx = bgCanvas.getContext('2d');
-    let width = 0;
-    let height = 0;
-    let gridPoints = [];
-    const gridSpacing = 45;
-    let mouse = { x: null, y: null, radius: 120 };
-
-    function resizeBgCanvas() {
-      width = bgCanvas.width = window.innerWidth;
-      height = bgCanvas.height = window.innerHeight;
-      
-      gridPoints = [];
-      for (let x = 0; x < width + gridSpacing; x += gridSpacing) {
-        for (let y = 0; y < height + gridSpacing; y += gridSpacing) {
-          gridPoints.push({
-            x: x,
-            y: y,
-            baseX: x,
-            baseY: y,
-            vx: 0,
-            vy: 0,
-            angle: Math.random() * Math.PI * 2,
-            speed: 0.15 + Math.random() * 0.2
-          });
-        }
-      }
-    }
+  // --- ANTIGRAVITY FLOATING PARTICLES CANVAS BACKDROP ---
+  const canvas = document.getElementById('antigravity-canvas');
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+    
+    const mouse = { x: null, y: null, radius: 130 }; // repulsion range
+    const particles = [];
+    const particleCount = 200;
 
     window.addEventListener('mousemove', (e) => {
       mouse.x = e.clientX;
       mouse.y = e.clientY;
     });
 
-    window.addEventListener('mouseleave', () => {
+    window.addEventListener('mouseout', () => {
       mouse.x = null;
       mouse.y = null;
     });
 
-    window.addEventListener('resize', resizeBgCanvas);
-    resizeBgCanvas();
+    class Particle {
+      constructor() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.baseX = this.x;
+        this.baseY = this.y;
+        this.size = Math.random() * 2 + 1; // particle radius (1 to 3px)
+        this.density = (Math.random() * 20) + 10; // return force speed
+        
+        // Gradient particle color assignment for depth
+        const colors = ['#0088ff', '#00f0ff', '#3b82f6', '#1e293b'];
+        this.color = colors[Math.floor(Math.random() * colors.length)];
+      }
 
-    let animationTime = 0;
-    function animateBgMesh() {
-      bgCtx.clearRect(0, 0, width, height);
-      animationTime += 0.005;
-
-      bgCtx.fillStyle = 'rgba(16, 185, 129, 0.015)';
-      bgCtx.strokeStyle = 'rgba(255, 255, 255, 0.012)';
-      bgCtx.lineWidth = 0.5;
-
-      gridPoints.forEach(point => {
-        // Subtle ambient wave motion
-        point.angle += 0.01;
-        let waveX = Math.sin(point.angle + animationTime) * 8;
-        let waveY = Math.cos(point.angle + animationTime) * 8;
-
-        let targetX = point.baseX + waveX;
-        let targetY = point.baseY + waveY;
-
-        // Mouse attraction/repel
-        if (mouse.x !== null && mouse.y !== null) {
-          let dx = mouse.x - targetX;
-          let dy = mouse.y - targetY;
-          let dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < mouse.radius) {
-            let force = (mouse.radius - dist) / mouse.radius;
-            // Push points away slightly
-            targetX -= (dx / dist) * force * 15;
-            targetY -= (dy / dist) * force * 15;
-          }
+      update() {
+        // Floating ambient movement (constant slow upward drift)
+        this.baseY -= 0.25; 
+        if (this.baseY < 0) {
+          this.baseY = height;
+          this.y = height;
+          this.x = Math.random() * width;
+          this.baseX = this.x;
         }
 
-        // Interpolate point towards current target
-        point.x += (targetX - point.x) * 0.1;
-        point.y += (targetY - point.y) * 0.1;
+        let dx = mouse.x - this.x;
+        let dy = mouse.y - this.y;
+        let distance = Math.hypot(dx, dy);
 
-        // Draw small mesh dots
-        bgCtx.beginPath();
-        bgCtx.arc(point.x, point.y, 0.8, 0, Math.PI * 2);
-        bgCtx.fill();
-      });
-
-      // Draw faint connections for grid neighbors (horizontal only for clean tech lines)
-      bgCtx.beginPath();
-      for (let i = 0; i < gridPoints.length; i++) {
-        // Connect to next point on the right (if it shares same Y grid base)
-        const next = gridPoints[i + 1];
-        if (next && next.baseY === gridPoints[i].baseY && Math.abs(next.x - gridPoints[i].x) < gridSpacing * 1.5) {
-          bgCtx.moveTo(gridPoints[i].x, gridPoints[i].y);
-          bgCtx.lineTo(next.x, next.y);
+        if (distance < mouse.radius && mouse.x !== null) {
+          // Push particles away smoothly (Anti-gravity repulsion)
+          let forceFactor = (mouse.radius - distance) / mouse.radius;
+          let forceX = (dx / distance) * forceFactor * this.density;
+          let forceY = (dy / distance) * forceFactor * this.density;
+          
+          this.x -= forceX;
+          this.y -= forceY;
+        } else {
+          // Smooth return path to base floating trajectory
+          if (this.x !== this.baseX) {
+            this.x += (this.baseX - this.x) * 0.05;
+          }
+          // Ambient float alignment
+          this.y += (this.baseY - this.y) * 0.05;
+          this.baseX = this.x; // Keep current x as base baseline
         }
       }
-      bgCtx.stroke();
 
-      requestAnimationFrame(animateBgMesh);
+      draw() {
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.fill();
+      }
     }
-    animateBgMesh();
-  }
 
-  // --- EFFECT 11: HERO PARALLAX LAYER ---
-  const heroParallaxBg = document.querySelector('.parallax-bg');
-  if (heroParallaxBg) {
-    window.addEventListener('scroll', () => {
-      let scrollY = window.scrollY;
-      // Shift background down slightly slower to simulate background distance depth
-      heroParallaxBg.style.transform = `translateY(${scrollY * 0.35}px)`;
+    function init() {
+      for (let i = 0; i < particleCount; i++) {
+        particles.push(new Particle());
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
     });
+
+    init();
+    animate();
   }
 
-  // --- EFFECT 18: TEXT SCROLL ON REVEAL ---
+  // --- SMOOTH CUSTOM CURSOR GLOW TRAILER ---
+  const cursorTrailer = document.querySelector('.cursor-trailer');
+  if (cursorTrailer) {
+    let targetX = 0;
+    let targetY = 0;
+    let currentX = 0;
+    let currentY = 0;
+    let hasMoved = false;
+
+    window.addEventListener('mousemove', (e) => {
+      targetX = e.clientX;
+      targetY = e.clientY;
+      if (!hasMoved) {
+        hasMoved = true;
+        document.body.classList.add('cursor-active');
+        currentX = targetX;
+        currentY = targetY;
+      }
+    });
+
+    window.addEventListener('mouseleave', () => {
+      document.body.classList.remove('cursor-active');
+      hasMoved = false;
+    });
+
+    function updateCursor() {
+      if (hasMoved) {
+        // Interpolate coords using spring physics (lerp factor 0.06 for lag-behind weight)
+        currentX += (targetX - currentX) * 0.06;
+        currentY += (targetY - currentY) * 0.06;
+        
+        cursorTrailer.style.transform = `translate(${currentX}px, ${currentY}px) translate(-50%, -50%)`;
+      }
+      requestAnimationFrame(updateCursor);
+    }
+    updateCursor();
+  }
+
+  // --- HERO TYPEWRITER LOOP ---
+  const typedTextSpan = document.getElementById('typed-text');
+  if (typedTextSpan) {
+    const roles = ["Cybersecurity Specialist", "Systems Auditor", "Penetration Tester", "Security Consultant"];
+    let roleIdx = 0;
+    let charIdx = 0;
+    let isDeleting = false;
+    let typingSpeed = 100;
+
+    function type() {
+      const currentRole = roles[roleIdx];
+      
+      if (isDeleting) {
+        typedTextSpan.textContent = currentRole.substring(0, charIdx - 1);
+        charIdx--;
+        typingSpeed = 50; // Deleting is faster
+      } else {
+        typedTextSpan.textContent = currentRole.substring(0, charIdx + 1);
+        charIdx++;
+        typingSpeed = 100;
+      }
+
+      if (!isDeleting && charIdx === currentRole.length) {
+        // Pause at the end of the word
+        isDeleting = true;
+        typingSpeed = 1500;
+      } else if (isDeleting && charIdx === 0) {
+        isDeleting = false;
+        roleIdx = (roleIdx + 1) % roles.length;
+        typingSpeed = 500; // Pause before starting next role
+      }
+
+      setTimeout(type, typingSpeed);
+    }
+    
+    // Start after a slight delay
+    setTimeout(type, 1000);
+  }
+
+  // --- TEXT SCROLL ON REVEAL ---
   const revealParagraph = document.querySelector('.reveal-paragraph');
   if (revealParagraph) {
     const rawText = revealParagraph.innerText;
@@ -131,19 +196,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const rect = revealParagraph.getBoundingClientRect();
       const winHeight = window.innerHeight;
       
-      // Calculate scroll progress relative to the viewport height
-      // 0.8: enters bottom area; 0.2: exits top area
+      // Calculate scroll progress relative to viewport height
       const triggerStart = winHeight * 0.85;
       const triggerEnd = winHeight * 0.15;
       
       const elementHeight = rect.height;
       const currentPos = rect.top;
       
-      // Map progress from 0 (below screen) to 1 (passed screen)
       let progress = (triggerStart - currentPos) / (triggerStart - triggerEnd + elementHeight);
-      progress = Math.max(0, Math.min(1, progress)); // clamp between 0 and 1
+      progress = Math.max(0, Math.min(1, progress)); // clamp
       
-      // Scale progress to reveal index
       const revealThreshold = Math.floor(progress * wordSpans.length * 1.4 - wordSpans.length * 0.15);
       
       wordSpans.forEach((span, idx) => {
@@ -157,24 +219,24 @@ document.addEventListener('DOMContentLoaded', () => {
     
     window.addEventListener('scroll', checkWordReveal);
     window.addEventListener('resize', checkWordReveal);
-    checkWordReveal(); // Initial check
+    checkWordReveal();
   }
 
-  // --- EFFECT 7: STICKY SECTIONS INTERSECTION LINKS ---
+  // --- STICKY SECTIONS INTERSECTION LINKS ---
   const sections = document.querySelectorAll('section[id]');
-  const navLinks = document.querySelectorAll('.nav-item');
+  const sidebarLinks = document.querySelectorAll('.sidebar-item');
   
   const sectionObserverOptions = {
     root: null,
     rootMargin: '-30% 0px -40% 0px', // trigger when section occupies viewport center
-    threshold: 0.15
+    threshold: 0
   };
   
   const sectionObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         const id = entry.target.getAttribute('id');
-        navLinks.forEach(link => {
+        sidebarLinks.forEach(link => {
           link.classList.remove('active');
           if (link.getAttribute('href') === `#${id}`) {
             link.classList.add('active');
@@ -204,16 +266,16 @@ document.addEventListener('DOMContentLoaded', () => {
     skillObserver.observe(bar);
   });
 
-  // --- EXPERIMENTAL NODE MESH CANVAS (Skills Side Graphic) ---
+  // --- EXPERIMENTAL NODE MESH CANVAS (Skills Dashboard Graphic) ---
   const nodesCanvas = document.getElementById('nodes-canvas');
   if (nodesCanvas) {
     const nCtx = nodesCanvas.getContext('2d');
     let cWidth = 0;
     let cHeight = 0;
     let nodesList = [];
-    const totalNodesCount = 30;
-    const connectDistance = 85;
-    let localMouse = { x: null, y: null, radius: 85 };
+    const totalNodesCount = 25;
+    const connectDistance = 80;
+    let localMouse = { x: null, y: null, radius: 80 };
 
     function resizeLocalCanvas() {
       const containerRect = nodesCanvas.parentElement.getBoundingClientRect();
@@ -225,8 +287,8 @@ document.addEventListener('DOMContentLoaded', () => {
         nodesList.push({
           x: Math.random() * cWidth,
           y: Math.random() * cHeight,
-          vx: (Math.random() - 0.5) * 0.4,
-          vy: (Math.random() - 0.5) * 0.4,
+          vx: (Math.random() - 0.5) * 0.45,
+          vy: (Math.random() - 0.5) * 0.45,
           size: Math.random() * 2 + 1
         });
       }
@@ -260,7 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (node.x > cWidth || node.x < 0) node.vx *= -1;
         if (node.y > cHeight || node.y < 0) node.vy *= -1;
 
-        // Cursor magnetic gravity force
+        // Cursor attraction
         if (localMouse.x !== null && localMouse.y !== null) {
           let dx = localMouse.x - node.x;
           let dy = localMouse.y - node.y;
@@ -272,7 +334,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
 
-        nCtx.fillStyle = 'rgba(16, 185, 129, 0.65)';
+        nCtx.fillStyle = 'rgba(0, 240, 255, 0.65)';
         nCtx.beginPath();
         nCtx.arc(node.x, node.y, node.size, 0, Math.PI * 2);
         nCtx.fill();
@@ -288,15 +350,15 @@ document.addEventListener('DOMContentLoaded', () => {
           
           if (distance < connectDistance) {
             let opacity = (1 - (distance / connectDistance)) * 0.22;
-            nCtx.strokeStyle = `rgba(16, 185, 129, ${opacity})`;
+            nCtx.strokeStyle = `rgba(0, 136, 255, ${opacity})`;
             
-            // Brighten connecting paths near user cursor
+            // Highlight connections near cursor
             if (localMouse.x !== null && localMouse.y !== null) {
               let mDx = localMouse.x - nodesList[i].x;
               let mDy = localMouse.y - nodesList[i].y;
               let mDistance = Math.sqrt(mDx * mDx + mDy * mDy);
               if (mDistance < localMouse.radius) {
-                nCtx.strokeStyle = `rgba(52, 211, 153, ${opacity * 2.2})`;
+                nCtx.strokeStyle = `rgba(0, 240, 255, ${opacity * 2.5})`;
                 activeConnections++;
               }
             }
@@ -330,7 +392,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (entry.isIntersecting) {
           entry.target.classList.add('revealed');
           
-          // Smoothly animate the line track height down on reveal
           if (timelineLineTrack) {
             timelineLineTrack.style.height = '100%';
           }
@@ -355,20 +416,19 @@ document.addEventListener('DOMContentLoaded', () => {
       
       if (val.length === 0) {
         auditEntropy.innerText = "0 bits";
-        auditEntropy.className = "result-val text-muted";
+        auditEntropy.style.color = 'var(--text-muted)';
         auditStrength.innerText = "NONE";
-        auditStrength.className = "result-val text-muted";
+        auditStrength.style.color = 'var(--text-muted)';
         auditCracktime.innerText = "Instantly (<0.01s)";
-        auditCracktime.className = "result-val text-muted";
+        auditCracktime.style.color = 'var(--text-muted)';
         return;
       }
 
-      // Calculate character set pool size R
       let R = 0;
       if (/[a-z]/.test(val)) R += 26;
       if (/[A-Z]/.test(val)) R += 26;
       if (/[0-9]/.test(val)) R += 10;
-      if (/[^a-zA-Z0-9]/.test(val)) R += 33; // Symbols pool approx size
+      if (/[^a-zA-Z0-9]/.test(val)) R += 33; 
 
       const entropy = Math.round(val.length * Math.log2(R));
       auditEntropy.innerText = `${entropy} bits`;
@@ -377,19 +437,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const secondsToCrack = guesses / 1e9; // 1 Billion guesses/sec hashing benchmark
 
       let timeText = "";
-      let colorClass = "";
-      let strengthText = "";
 
       if (entropy < 35) {
-        strengthText = "WEAK";
+        auditStrength.innerText = "WEAK";
         timeText = "Instantly (<0.01s)";
-        colorClass = "text-accent"; // Reddish/Orange alert in original theme, we'll keep custom colors
-        auditEntropy.style.color = '#f43f5e';
-        auditStrength.style.color = '#f43f5e';
-        auditCracktime.style.color = '#f43f5e';
+        auditEntropy.style.color = '#ef4444';
+        auditStrength.style.color = '#ef4444';
+        auditCracktime.style.color = '#ef4444';
       } else if (entropy < 55) {
-        strengthText = "MODERATE";
-        colorClass = "text-blue";
+        auditStrength.innerText = "MODERATE";
         auditEntropy.style.color = 'var(--blue-color)';
         auditStrength.style.color = 'var(--blue-color)';
         auditCracktime.style.color = 'var(--blue-color)';
@@ -401,11 +457,10 @@ document.addEventListener('DOMContentLoaded', () => {
           timeText = `${Math.round(secondsToCrack / 3600)} hours`;
         }
       } else {
-        strengthText = "SECURE";
-        colorClass = "text-success";
-        auditEntropy.style.color = 'var(--primary-color)';
-        auditStrength.style.color = 'var(--primary-color)';
-        auditCracktime.style.color = 'var(--primary-color)';
+        auditStrength.innerText = "SECURE";
+        auditEntropy.style.color = 'var(--accent-color)';
+        auditStrength.style.color = 'var(--accent-color)';
+        auditCracktime.style.color = 'var(--accent-color)';
         const days = secondsToCrack / 86400;
         if (days < 365) {
           timeText = `${Math.round(days)} days`;
@@ -415,13 +470,11 @@ document.addEventListener('DOMContentLoaded', () => {
           timeText = "Centuries / Resistant";
         }
       }
-
-      auditStrength.innerText = strengthText;
       auditCracktime.innerText = timeText;
     });
   }
 
-  // --- WIDGET 2: SIMULATED OCR SCANNER WIDGET ---
+  // --- WIDGET 2: SIMULATED OCR SCANNER ---
   const ocrBtn = document.getElementById('trigger-ocr-btn');
   const ocrLaser = document.querySelector('.ocr-laser-line');
   const ocrOutput = document.getElementById('ocr-output-log');
@@ -458,7 +511,7 @@ document.addEventListener('DOMContentLoaded', () => {
           confidence_rating: "99.8%"
         };
 
-        ocrOutput.innerHTML = `<pre style="line-height: 1.35; margin: 0; color: var(--primary-color);">${JSON.stringify(mockData, null, 2)}</pre>`;
+        ocrOutput.innerHTML = `<pre style="line-height: 1.35; margin: 0; color: var(--accent-color);">${JSON.stringify(mockData, null, 2)}</pre>`;
       }, 3000);
     });
   }
@@ -483,7 +536,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- UTILITY SYSTEMS (Ping and Timestamps) ---
+  // --- CLOCK AND PING UTILITY TIMERS ---
   const clockElement = document.getElementById('sys-clock');
   if (clockElement) {
     setInterval(() => {
@@ -495,9 +548,37 @@ document.addEventListener('DOMContentLoaded', () => {
   const pingElement = document.getElementById('ping-value');
   if (pingElement) {
     setInterval(() => {
-      const randPing = Math.floor(Math.random() * 12) + 6;
+      const randPing = Math.floor(Math.random() * 10) + 5;
       pingElement.innerText = `${randPing}ms`;
     }, 4000);
   }
+
+  // --- SCROLL VELOCITY-BASED MOTION BLUR ---
+  let lastScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  let lastScrollTime = performance.now();
+  let scrollBlurTimeout;
+
+  window.addEventListener('scroll', () => {
+    const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const currentScrollTime = performance.now();
+
+    const deltaY = Math.abs(currentScrollTop - lastScrollTop);
+    const deltaTime = currentScrollTime - lastScrollTime;
+
+    if (deltaTime > 0 && deltaY > 0) {
+      const velocity = deltaY / deltaTime;
+      // Map velocity to blur amount (clamped max to 4px)
+      const blurValue = Math.min(velocity * 2.2, 4);
+      document.documentElement.style.setProperty('--scroll-blur', `${blurValue}px`);
+    }
+
+    lastScrollTop = currentScrollTop;
+    lastScrollTime = currentScrollTime;
+
+    clearTimeout(scrollBlurTimeout);
+    scrollBlurTimeout = setTimeout(() => {
+      document.documentElement.style.setProperty('--scroll-blur', '0px');
+    }, 120);
+  }, { passive: true });
 
 });
